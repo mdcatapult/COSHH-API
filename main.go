@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type Coshh struct {
+type Chemical struct {
 	CasNumber       string    `json:"casNumber" db:"cas_number"`
 	ChemicalName    string    `json:"chemicalName" db:"chemical_name"`
 	PhotoPath       string    `json:"photoPath" db:"photo_path"`
@@ -43,9 +43,9 @@ func main() {
 func getCOSHH(c *gin.Context) {
 
 	c.Header("Access-Control-Allow-Origin", "*")
-	var res Coshh
+	var res []Chemical
 	query := `SELECT * FROM coshh`
-	if err := db.Get(&res, query); err != nil {
+	if err := db.Select(&res, query); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
