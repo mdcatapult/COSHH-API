@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -26,21 +27,31 @@ var db *sqlx.DB
 
 func main() {
 
+	const (
+		host     = "localhost"
+		port     = 5432
+		user     = "postgres"
+		password = "postgres"
+		dbname   = "coshh"
+	)
+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+
 	var err error
-	db, err = sqlx.Connect("postgres", "postgres://postgres@localhost/coshh?sslmode=disable")
+	db, err = sqlx.Connect("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal("Could not connect to the database, " + err.Error())
 		return
 	}
 
 	r := gin.Default()
-	r.GET("/coshh", getCOSHH)
+	r.GET("/chemicals", getChemicals)
 	if err := r.Run(); err != nil {
 		log.Fatal("Failed to start server", err)
 	}
 }
 
-func getCOSHH(c *gin.Context) {
+func getChemicals(c *gin.Context) {
 
 	c.Header("Access-Control-Allow-Origin", "*")
 	var res []Chemical
