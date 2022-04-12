@@ -121,12 +121,6 @@ func updateChemical(c *gin.Context) {
 
 func insertChemical(c *gin.Context) {
 
-	var b []byte
-	fmt.Println(c.Request)
-	reader, _ := c.Request.GetBody()
-	reader.Read(b)
-	fmt.Println(string(b))
-
 	var chemical Chemical
 	if err := c.BindJSON(&chemical); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -161,8 +155,42 @@ func insertChemical(c *gin.Context) {
 		:is_archived
 	)`
 
-	_, err := db.NamedExec(query, chemical)
+	tx, err := db.Beginx()
 	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	_, err = tx.NamedExec(query, chemical)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	// chemicalToHazard represents a row in chemical_to_hazard
+	type chemicalToHazard struct {
+		CasNumber string `db:"cas_number"`
+		Hazard    string `db:"hazard"`
+	}
+
+	chemicalToHazards := make([]chemicalToHazard, 0)
+
+	query = `INSERT INTO chemical_to_hazard (cas_number, hazard) VALUES (:cas_number, :hazard)`
+
+	for _, hazard := range chemical.Hazards {
+		chemicalToHazards = append(chemicalToHazards, chemicalToHazard{
+			CasNumber: chemical.CasNumber,
+			Hazard:    hazard,
+		})
+	}
+
+	_, err = tx.NamedExec(query, chemicalToHazards)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := tx.Commit(); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
