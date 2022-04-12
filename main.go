@@ -121,6 +121,12 @@ func updateChemical(c *gin.Context) {
 
 func insertChemical(c *gin.Context) {
 
+	var b []byte
+	fmt.Println(c.Request)
+	reader, _ := c.Request.GetBody()
+	reader.Read(b)
+	fmt.Println(string(b))
+
 	var chemical Chemical
 	if err := c.BindJSON(&chemical); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
