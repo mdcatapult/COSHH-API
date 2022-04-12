@@ -26,7 +26,7 @@ type Chemical struct {
 	StorageTemp     string    `json:"storageTemp" db:"storage_temp"`
 	IsArchived      bool      `json:"isArchived" db:"is_archived"`
 	Hazards         []string  `json:"hazards" db:"-"`
-	DBHazards       string    `json:"-" db:"hazards"`
+	DBHazards       *string   `json:"-" db:"hazards"`
 }
 
 var db *sqlx.DB
@@ -69,7 +69,7 @@ func getChemicals(c *gin.Context) {
 		SELECT 
 		c.*, 
 		string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
-		FROM chemical c JOIN chemical_to_hazard c2h ON c.cas_number = c2h.cas_number 
+		FROM chemical c LEFT JOIN chemical_to_hazard c2h ON c.cas_number = c2h.cas_number 
 		GROUP BY c.cas_number`
 
 	if err := db.Select(&chemicals, query); err != nil {
@@ -78,7 +78,9 @@ func getChemicals(c *gin.Context) {
 	}
 
 	for i := range chemicals {
-		chemicals[i].Hazards = strings.Split(chemicals[i].DBHazards, ",")
+		if chemicals[i].DBHazards != nil {
+			chemicals[i].Hazards = strings.Split(*chemicals[i].DBHazards, ",")
+		}
 	}
 
 	c.JSON(http.StatusOK, chemicals)
