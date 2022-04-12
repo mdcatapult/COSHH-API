@@ -14,7 +14,7 @@ import (
 
 type Chemical struct {
 	CasNumber       string    `json:"casNumber" db:"cas_number"`
-	ChemicalName    string    `json:"chemicalName" db:"chemical_name"`
+	Name            string    `json:"name" db:"chemical_name"`
 	PhotoPath       string    `json:"photoPath" db:"photo_path"`
 	MatterState     string    `json:"matterState" db:"matter_state"`
 	Quantity        string    `json:"quantity" db:"quantity"`
