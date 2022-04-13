@@ -88,8 +88,13 @@ func InsertChemical(chemical chemical.Chemical) error {
 		return err
 	}
 
-	insertChemical(tx, chemical)
-	insertHazards(tx, chemical)
+	if err := insertChemical(tx, chemical); err != nil {
+		return err
+	}
+
+	if err := insertHazards(tx, chemical); err != nil {
+		return err
+	}
 
 	return tx.Commit()
 }
