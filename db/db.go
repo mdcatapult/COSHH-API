@@ -55,7 +55,7 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 			c.is_archived,
 			string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
 		FROM chemical c 
-		JOIN chemical_to_hazard c2h ON c.id = c2h.id 
+		LEFT JOIN chemical_to_hazard c2h ON c.id = c2h.id 
 		GROUP BY c.id`
 
 	if err := db.Select(&chemicals, query); err != nil {
