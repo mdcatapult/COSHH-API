@@ -41,10 +41,22 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 	var chemicals []chemical.Chemical
 	query := `
 		SELECT 
-		c.*, 
-		string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
-		FROM chemical c LEFT JOIN chemical_to_hazard c2h ON c.cas_number = c2h.cas_number 
-		GROUP BY c.cas_number`
+			c.cas_number,
+			c.chemical_name,
+			c.photo_path,
+			c.matter_state,
+			c.quantity,
+			c.added,
+			c.expiry,
+			c.safety_data_sheet,
+			c.coshh_link,
+			c.lab_location,
+			c.storage_temp,
+			c.is_archived,
+			string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
+		FROM chemical c 
+		JOIN chemical_to_hazard c2h ON c.id = c2h.id 
+		GROUP BY c.id`
 
 	if err := db.Select(&chemicals, query); err != nil {
 		return nil, err
@@ -88,18 +100,19 @@ func InsertChemical(chemical chemical.Chemical) error {
 		return err
 	}
 
-	if err := insertChemical(tx, chemical); err != nil {
+	id, err := insertChemical(tx, chemical)
+	if err != nil {
 		return err
 	}
 
-	if err := insertHazards(tx, chemical); err != nil {
+	if err := insertHazards(tx, chemical, id); err != nil {
 		return err
 	}
 
 	return tx.Commit()
 }
 
-func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) error {
+func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err error) {
 	query := `INSERT INTO chemical (
 		cas_number,
 		chemical_name,
@@ -126,27 +139,41 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) error {
 		:lab_location,
 		:storage_temp,
 		:is_archived
-	)`
+	) RETURNING id`
 
-	_, err := tx.NamedExec(query, chemical)
-	return err
+	rows, err := tx.NamedQuery(query, chemical)
+	if err != nil {
+		return
+	}
+
+	rows.Next()
+	if err := rows.Scan(&id); err != nil {
+		return 0, err
+	}
+
+	if err := rows.Close(); err != nil {
+		return 0, err
+	}
+
+	return
+
 }
 
-func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical) error {
+func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical, id int64) error {
 	// chemicalToHazard represents a row in chemical_to_hazard
 	type chemicalToHazard struct {
-		CasNumber string `db:"cas_number"`
-		Hazard    string `db:"hazard"`
+		Id     int64  `db:"id"`
+		Hazard string `db:"hazard"`
 	}
 
 	chemicalToHazards := make([]chemicalToHazard, 0)
 
-	query := `INSERT INTO chemical_to_hazard (cas_number, hazard) VALUES (:cas_number, :hazard)`
+	query := `INSERT INTO chemical_to_hazard (id, hazard) VALUES (:id, :hazard)`
 
 	for _, hazard := range chemical.Hazards {
 		chemicalToHazards = append(chemicalToHazards, chemicalToHazard{
-			CasNumber: chemical.CasNumber,
-			Hazard:    hazard,
+			Id:     id,
+			Hazard: hazard,
 		})
 	}
 
