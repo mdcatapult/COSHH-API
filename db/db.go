@@ -13,7 +13,7 @@ var db *sqlx.DB
 
 func Connect() error {
 	const (
-		host     = "db"
+		host     = "localhost"
 		port     = 5432
 		user     = "postgres"
 		password = "postgres"
