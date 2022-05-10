@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
+	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
+	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/server"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"reflect"
 	"testing"
@@ -31,6 +34,18 @@ var chem = chemical.Chemical{
 
 var client = &http.Client{}
 
+func TestMain(m *testing.M) {
+	if err := db.Connect(); err != nil {
+		log.Fatal("Failed to start DB", err)
+	}
+	go func() {
+		if err := server.Start(); err != nil {
+			log.Fatal("Failed to start server", err)
+		}
+	}()
+	m.Run()
+}
+
 func TestPostChemical(t *testing.T) {
 	jsonChemical, err := json.Marshal(chem)
 
@@ -43,7 +58,6 @@ func TestPostChemical(t *testing.T) {
 	response, err := client.Do(req)
 
 	assert.Nil(t, err, "Failed to send POST request")
-
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	bodyBytes, err := ioutil.ReadAll(response.Body)
