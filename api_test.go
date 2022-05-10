@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
 	"io/ioutil"
@@ -35,44 +34,39 @@ var client = &http.Client{}
 func TestPostChemical(t *testing.T) {
 	jsonChemical, err := json.Marshal(chem)
 
-	if err != nil {
-		fmt.Println("error")
-	}
+	assert.Nil(t, err, "Failed to marshal into chemical")
 
 	req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/chemical", bytes.NewBuffer(jsonChemical))
 
-	assert.Nil(t, err)
-
-	fmt.Println("request error", err)
+	assert.Nil(t, err, "Failed to build post request")
 
 	response, err := client.Do(req)
 
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Failed to send POST request")
 
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	bodyBytes, err := ioutil.ReadAll(response.Body)
 
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Failed to read message body")
 
 	var responseChemical chemical.Chemical
 	err = json.Unmarshal(bodyBytes, &responseChemical)
 
-	fmt.Println("result", string(bodyBytes))
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Failed to unmarshal into chemical")
 
 	assert.Equal(t, chem, responseChemical)
 }
 
 func TestGetChemical(t *testing.T) {
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/chemicals", nil)
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Failed to build GET request")
 
 	response, err := client.Do(req)
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Failed to send GET request")
 
 	bodyBytes, err := ioutil.ReadAll(response.Body)
-	assert.Nil(t, err)
+	assert.Nil(t, err, "Failed to read message body")
 	var responseChemicals []chemical.Chemical
 
 	err = json.Unmarshal(bodyBytes, &responseChemicals)
@@ -84,4 +78,26 @@ func TestGetChemical(t *testing.T) {
 		}
 	}
 	assert.True(t, found)
+}
+
+func TestPutChemical(t *testing.T) {
+	putChem := chem
+	putChem.Name = "bread"
+	jsonChemical, err := json.Marshal(putChem)
+
+	assert.Nil(t, err, "Failed to marshal into chemical")
+
+	req, err := http.NewRequest(http.MethodPut, "http://localhost:8080/chemical", bytes.NewBuffer(jsonChemical))
+	assert.Nil(t, err, "Failed to build PUT request")
+
+	response, err := client.Do(req)
+	assert.Nil(t, err, "Failed to send PUT request")
+
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	assert.Nil(t, err, "Failed to read message body")
+	var responseChemical chemical.Chemical
+
+	err = json.Unmarshal(bodyBytes, &responseChemical)
+
+	assert.Equal(t, putChem, responseChemical)
 }

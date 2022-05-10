@@ -42,7 +42,7 @@ func updateChemical(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	c.AbortWithStatus(http.StatusOK)
+	c.JSON(http.StatusOK, chemical)
 }
 
 func insertChemical(c *gin.Context) {
