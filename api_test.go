@@ -24,12 +24,9 @@ var chem = chemical.Chemical{
 	Added:           time.Time{},
 	Expiry:          time.Time{},
 	SafetyDataSheet: "",
-	CoshhLink:       nil,
-	Location:        nil,
 	StorageTemp:     "+4",
 	IsArchived:      false,
 	Hazards:         []string{"Explosive", "Flammable"},
-	DBHazards:       nil,
 }
 
 var client = &http.Client{}
@@ -48,27 +45,21 @@ func TestMain(m *testing.M) {
 
 func TestPostChemical(t *testing.T) {
 	jsonChemical, err := json.Marshal(chem)
-
 	assert.Nil(t, err, "Failed to marshal into chemical")
 
 	req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/chemical", bytes.NewBuffer(jsonChemical))
-
 	assert.Nil(t, err, "Failed to build post request")
 
 	response, err := client.Do(req)
-
 	assert.Nil(t, err, "Failed to send POST request")
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
 	bodyBytes, err := ioutil.ReadAll(response.Body)
-
 	assert.Nil(t, err, "Failed to read message body")
 
 	var responseChemical chemical.Chemical
 	err = json.Unmarshal(bodyBytes, &responseChemical)
-
 	assert.Nil(t, err, "Failed to unmarshal into chemical")
-
 	assert.Equal(t, chem, responseChemical)
 }
 
@@ -84,6 +75,7 @@ func TestGetChemical(t *testing.T) {
 	var responseChemicals []chemical.Chemical
 
 	err = json.Unmarshal(bodyBytes, &responseChemicals)
+	assert.Nil(t, err, "Failed to unmarshal into chemical")
 	found := false
 	for _, ch := range responseChemicals {
 		if reflect.DeepEqual(ch, chem) {
@@ -98,7 +90,6 @@ func TestPutChemical(t *testing.T) {
 	putChem := chem
 	putChem.Name = "bread"
 	jsonChemical, err := json.Marshal(putChem)
-
 	assert.Nil(t, err, "Failed to marshal into chemical")
 
 	req, err := http.NewRequest(http.MethodPut, "http://localhost:8080/chemical", bytes.NewBuffer(jsonChemical))
@@ -109,9 +100,8 @@ func TestPutChemical(t *testing.T) {
 
 	bodyBytes, err := ioutil.ReadAll(response.Body)
 	assert.Nil(t, err, "Failed to read message body")
+
 	var responseChemical chemical.Chemical
-
 	err = json.Unmarshal(bodyBytes, &responseChemical)
-
 	assert.Equal(t, putChem, responseChemical)
 }
