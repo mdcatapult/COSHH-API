@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -40,7 +41,8 @@ func TestMain(m *testing.M) {
 			log.Fatal("Failed to start server", err)
 		}
 	}()
-	m.Run()
+	status := m.Run()
+	os.Exit(status)
 }
 
 func TestPostChemical(t *testing.T) {
