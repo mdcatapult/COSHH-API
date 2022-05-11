@@ -53,7 +53,7 @@ func TestPostChemical(t *testing.T) {
 	jsonChemical, err := json.Marshal(chem)
 	assert.Nil(t, err, "Failed to marshal into chemical")
 
-	req, err := http.NewRequest(http.MethodPost, "http://localhost:8080/chemical", bytes.NewBuffer(jsonChemical))
+	req, err := http.NewRequest(http.MethodPost, "http://localhost:8081/chemical", bytes.NewBuffer(jsonChemical))
 	assert.Nil(t, err, "Failed to build post request")
 
 	response, err := client.Do(req)
@@ -71,7 +71,7 @@ func TestPostChemical(t *testing.T) {
 }
 
 func TestGetChemical(t *testing.T) {
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080/chemicals", nil)
+	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/chemicals", nil)
 	assert.Nil(t, err, "Failed to build GET request")
 
 	response, err := client.Do(req)
@@ -99,7 +99,7 @@ func TestPutChemical(t *testing.T) {
 	jsonChemical, err := json.Marshal(putChem)
 	assert.Nil(t, err, "Failed to marshal into chemical")
 
-	req, err := http.NewRequest(http.MethodPut, "http://localhost:8080/chemical", bytes.NewBuffer(jsonChemical))
+	req, err := http.NewRequest(http.MethodPut, "http://localhost:8081/chemical", bytes.NewBuffer(jsonChemical))
 	assert.Nil(t, err, "Failed to build PUT request")
 
 	response, err := client.Do(req)
