@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/csv"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -77,15 +76,13 @@ func getLabs(c *gin.Context) {
 	defer labsFile.Close()
 
 	csvReader := csv.NewReader(labsFile)
-	data, err := csvReader.ReadAll()
+	labs, err := csvReader.Read()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	fmt.Println(data)
-
-	// c.Data(http.StatusOK, "application/text", byte(data))
+	c.JSON(http.StatusOK, labs)
 }
 
 func corsMiddleware() gin.HandlerFunc {
