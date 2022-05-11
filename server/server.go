@@ -58,9 +58,11 @@ func insertChemical(c *gin.Context) {
 		return
 	}
 
-	if err := db.InsertChemical(chemical); err != nil {
+	id, err := db.InsertChemical(chemical)
+	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
+	chemical.Id = id
 
 	c.JSON(http.StatusOK, chemical)
 }

@@ -41,6 +41,7 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 	var chemicals []chemical.Chemical
 	query := `
 		SELECT 
+			c.id,
 			c.cas_number,
 			c.chemical_name,
 			c.photo_path,
@@ -75,6 +76,7 @@ func UpdateChemical(chemical chemical.Chemical) error {
 	query := `
 	UPDATE chemical 
 	SET 
+		cas_number = :cas_number,
 		chemical_name = :chemical_name,
 		photo_path = :photo_path,
 		matter_state = :matter_state,
@@ -86,30 +88,30 @@ func UpdateChemical(chemical chemical.Chemical) error {
 		lab_location = :lab_location,
 		storage_temp = :storage_temp,
 		is_archived = :is_archived
-	WHERE cas_number = :cas_number
+	WHERE id = :id
 `
 
 	_, err := db.NamedExec(query, chemical)
 	return err
 }
 
-func InsertChemical(chemical chemical.Chemical) error {
+func InsertChemical(chemical chemical.Chemical) (id int64, err error) {
 
 	tx, err := db.Beginx()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	id, err := insertChemical(tx, chemical)
+	id, err = insertChemical(tx, chemical)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if err := insertHazards(tx, chemical, id); err != nil {
-		return err
+		return 0, err
 	}
 
-	return tx.Commit()
+	return id, tx.Commit()
 }
 
 func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err error) {
