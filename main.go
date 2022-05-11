@@ -10,11 +10,11 @@ import (
 
 func main() {
 
-	if err := db.Connect(); err != nil {
+	if err := db.Connect("db"); err != nil {
 		log.Fatal("Failed to start DB", err)
 	}
 
-	if err := server.Start(); err != nil {
+	if err := server.Start(":8080"); err != nil {
 		log.Fatal("Failed to start server", err)
 	}
 }

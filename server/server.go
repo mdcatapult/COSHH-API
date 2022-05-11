@@ -8,7 +8,7 @@ import (
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
 )
 
-func Start() error {
+func Start(port string) error {
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
@@ -16,7 +16,7 @@ func Start() error {
 	r.PUT("/chemical", updateChemical)
 	r.POST("/chemical", insertChemical)
 
-	return r.Run()
+	return r.Run(port)
 }
 
 func getChemicals(c *gin.Context) {

@@ -2,18 +2,16 @@ package db
 
 import (
 	"fmt"
-	"strings"
-	"time"
-
 	"github.com/jmoiron/sqlx"
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
+	"strings"
+	"time"
 )
 
 var db *sqlx.DB
 
-func Connect() error {
+func Connect(host string) error {
 	const (
-		host     = "localhost"
 		port     = 5432
 		user     = "postgres"
 		password = "postgres"

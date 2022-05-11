@@ -17,27 +17,31 @@ import (
 )
 
 var chem = chemical.Chemical{
-	CasNumber:       "12345678",
+	CasNumber:       stringPtr("12345678"),
 	Name:            "beans",
-	PhotoPath:       "blueberries",
-	MatterState:     "liquid",
-	Quantity:        "5",
-	Added:           time.Time{},
-	Expiry:          time.Time{},
-	SafetyDataSheet: "",
+	PhotoPath:       stringPtr("blueberries"),
+	MatterState:     stringPtr("liquid"),
+	Quantity:        stringPtr("5"),
+	Added:           &time.Time{},
+	Expiry:          &time.Time{},
+	SafetyDataSheet: stringPtr(""),
 	StorageTemp:     "+4",
 	IsArchived:      false,
 	Hazards:         []string{"Explosive", "Flammable"},
 }
 
+func stringPtr(v string) *string {
+	return &v
+}
+
 var client = &http.Client{}
 
 func TestMain(m *testing.M) {
-	if err := db.Connect(); err != nil {
+	if err := db.Connect("localhost"); err != nil {
 		log.Fatal("Failed to start DB", err)
 	}
 	go func() {
-		if err := server.Start(); err != nil {
+		if err := server.Start(":8081"); err != nil {
 			log.Fatal("Failed to start server", err)
 		}
 	}()
@@ -61,6 +65,7 @@ func TestPostChemical(t *testing.T) {
 
 	var responseChemical chemical.Chemical
 	err = json.Unmarshal(bodyBytes, &responseChemical)
+	chem.Id = responseChemical.Id
 	assert.Nil(t, err, "Failed to unmarshal into chemical")
 	assert.Equal(t, chem, responseChemical)
 }
