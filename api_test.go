@@ -85,7 +85,7 @@ func TestGetChemical(t *testing.T) {
 			break
 		}
 	}
-	assert.True(t, found)
+	assert.True(t, found, "Error: values are not the same")
 }
 
 func TestPutChemical(t *testing.T) {
