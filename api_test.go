@@ -3,10 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/server"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,6 +10,11 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
+	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
+	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/server"
 )
 
 var chem = chemical.Chemical{
@@ -45,6 +46,10 @@ func TestMain(m *testing.M) {
 			log.Fatal("Failed to start server", err)
 		}
 	}()
+
+	// wait for server to start
+	time.Sleep(time.Second * 2)
+
 	status := m.Run()
 	os.Exit(status)
 }
