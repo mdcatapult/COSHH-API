@@ -6,18 +6,43 @@ import (
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
 	"strings"
 	"time"
+	"context"
+	"log"
+	"github.com/sethvargo/go-envconfig"
 )
 
 var db *sqlx.DB
 
+type Config struct {
+	Port     int    `env:"PORT,required"`
+	User string `env:"USER,default=postgres,required"`
+	Password string `env:"PASSWORD,required"`
+	DbName string `env:"DBNAME,required"`
+	Host string `env:"HOST,required"`
+}
+
 func Connect(host string) error {
-	const (
+	var (
 		port     = 5432
 		user     = "postgres"
 		password = "postgres"
 		dbname   = "coshh"
 		retries  = 3
 	)
+
+	ctx := context.Background()
+	var config Config
+
+	if err := envconfig.Process(ctx, &config); err != nil {
+		log.Println("Env vars unset or incorrect, using default config")
+	} else {
+		log.Println("Using config from env vars")
+		host = config.Host
+		port = config.Port
+		user = config.User
+		password = config.Password
+		dbname = config.DbName
+	}
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
