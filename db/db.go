@@ -1,14 +1,13 @@
 package db
 
 import (
+	"context"
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/sethvargo/go-envconfig"
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
 	"strings"
 	"time"
-	"context"
-	"log"
-	"github.com/sethvargo/go-envconfig"
 )
 
 var db *sqlx.DB
@@ -26,17 +25,18 @@ func Connect(host string) error {
 		port     = 5432
 		user     = "postgres"
 		password = "postgres"
-		dbname   = "coshh"
+		dbname   = "informatics"
 		retries  = 3
+		schema = "coshh"
 	)
 
 	ctx := context.Background()
 	var config Config
 
 	if err := envconfig.Process(ctx, &config); err != nil {
-		log.Println("Env vars unset or incorrect, using default config")
+		fmt.Println("Env vars unset or incorrect, using default config")
 	} else {
-		log.Println("Using config from env vars")
+		fmt.Println("Using config from env vars")
 		host = config.Host
 		port = config.Port
 		user = config.User
@@ -50,6 +50,11 @@ func Connect(host string) error {
 	for i := 1; i < retries; i++ {
 		db, err = sqlx.Connect("postgres", psqlInfo)
 		if err == nil {
+			_, err = db.Exec(fmt.Sprintf("set search_path=%s", schema))
+			if err != nil {
+				fmt.Printf("Failed to set search path to schema: %s\n", schema)
+				return err
+			}
 			break
 		}
 
