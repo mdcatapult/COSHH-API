@@ -55,6 +55,8 @@ func Connect(host string) error {
 				fmt.Printf("Failed to set search path to schema: %s\n", schema)
 				return err
 			}
+			fmt.Printf("Connected to database: %s, schema: %s\n", dbname, schema)
+
 			break
 		}
 
