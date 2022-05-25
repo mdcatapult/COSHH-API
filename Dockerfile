@@ -9,6 +9,8 @@ COPY chemical ./chemical
 COPY db ./db
 COPY server ./server
 
+COPY labs.csv /mnt
+
 RUN go build -o coshh
 
 EXPOSE 8080
