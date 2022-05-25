@@ -60,6 +60,7 @@ func Connect(host string) error {
 			break
 		}
 
+		fmt.Println(err)
 		fmt.Println("Failed to connect to DB, retrying in 5 seconds...")
 		time.Sleep(5 * time.Second)
 	}
