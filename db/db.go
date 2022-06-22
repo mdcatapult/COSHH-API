@@ -3,21 +3,22 @@ package db
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/sethvargo/go-envconfig"
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
-	"strings"
-	"time"
 )
 
 var db *sqlx.DB
 
 type Config struct {
 	Port     int    `env:"PORT,required"`
-	User string `env:"USER,default=postgres,required"`
+	User     string `env:"USER,default=postgres,required"`
 	Password string `env:"PASSWORD,required"`
-	DbName string `env:"DBNAME,required"`
-	Host string `env:"HOST,required"`
+	DbName   string `env:"DBNAME,required"`
+	Host     string `env:"HOST,required"`
 }
 
 func Connect(host string) error {
@@ -27,7 +28,7 @@ func Connect(host string) error {
 		password = "postgres"
 		dbname   = "informatics"
 		retries  = 3
-		schema = "coshh"
+		schema   = "coshh"
 	)
 
 	ctx := context.Background()
@@ -69,7 +70,7 @@ func Connect(host string) error {
 }
 
 func SelectAllChemicals() ([]chemical.Chemical, error) {
-	var chemicals []chemical.Chemical
+	chemicals := make([]chemical.Chemical, 0)
 	query := `
 		SELECT 
 			c.id,
