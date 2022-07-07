@@ -1,17 +1,35 @@
 package server
 
 import (
+	"context"
 	"encoding/csv"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sethvargo/go-envconfig"
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
 )
 
+var labs_csv = "/mnt/labs.csv"
+
+type Config struct {
+	LabsCSV  string `env:"LABS_CSV,required"`
+}
+
 func Start(port string) error {
+
+	ctx := context.Background()
+	var config Config
+
+	if err := envconfig.Process(ctx, &config); err != nil {
+		fmt.Println("Env vars unset or incorrect, using default config")
+	} else {
+		fmt.Println("Using config from env vars")
+		labs_csv = config.LabsCSV
+	}
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
@@ -70,7 +88,7 @@ func insertChemical(c *gin.Context) {
 }
 
 func getLabs(c *gin.Context) {
-	labsFile, err := os.Open("/mnt/labs.csv")
+	labsFile, err := os.Open(labs_csv)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
