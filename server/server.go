@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/csv"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -19,6 +20,8 @@ func Start(port string) error {
 	r.POST("/chemical", insertChemical)
 
 	r.GET("/labs", getLabs)
+
+	r.PUT("/hazards", updateHazards)
 
 	return r.Run(port)
 }
@@ -83,6 +86,27 @@ func getLabs(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, labs)
+}
+
+func updateHazards(c *gin.Context) {
+	fmt.Printf("in updateHazards")
+	var chemical chemical.Chemical
+	if err := c.BindJSON(&chemical); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	err := db.DeleteHazards(chemical)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	err = db.InsertHazards(chemical)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	c.JSON(http.StatusOK, chemical)
 }
 
 func corsMiddleware() gin.HandlerFunc {
