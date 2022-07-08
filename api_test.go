@@ -117,3 +117,23 @@ func TestPutChemical(t *testing.T) {
 	err = json.Unmarshal(bodyBytes, &responseChemical)
 	assert.Equal(t, putChem, responseChemical)
 }
+
+func TestPutHazards(t *testing.T) {
+	putChem := chem
+	putChem.Hazards = []string{"Corrosive", "Serious health hazard"}
+	jsonChemical, err := json.Marshal(putChem)
+	assert.Nil(t, err, "Failed to marshal into chemical")
+
+	req, err := http.NewRequest(http.MethodPut, "http://localhost:8081/hazards", bytes.NewBuffer(jsonChemical))
+	assert.Nil(t, err, "Failed to build PUT request")
+
+	response, err := client.Do(req)
+	assert.Nil(t, err, "Failed to send PUT request")
+
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	assert.Nil(t, err, "Failed to read message body")
+
+	var responseChemical chemical.Chemical
+	err = json.Unmarshal(bodyBytes, &responseChemical)
+	assert.Equal(t, putChem, responseChemical)
+}
