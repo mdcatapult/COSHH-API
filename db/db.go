@@ -198,9 +198,9 @@ func DeleteHazards(chemical chemical.Chemical) error {
 	if err != nil {
 		return err
 	}
-
-	query := `DELETE FROM chemical_to_hazard WHERE id = (?);`
-	_, err = tx.NamedExec(query, chemical.Id)
+	fmt.Printf("The id is %s", chemical.Id)
+	query := `DELETE FROM chemical_to_hazard WHERE id = $1;`
+	_, err = tx.Exec(query, chemical.Id)
 	return err
 }
 
