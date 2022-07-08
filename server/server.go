@@ -118,9 +118,11 @@ func updateHazards(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	err = db.InsertHazards(chemical)
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+	if len(chemical.Hazards) > 0 {
+		err = db.InsertHazards(chemical)
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+		}
 	}
 
 	c.JSON(http.StatusOK, chemical)
