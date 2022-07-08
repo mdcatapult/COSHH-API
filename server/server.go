@@ -16,7 +16,7 @@ import (
 var labs_csv = "/mnt/labs.csv"
 
 type Config struct {
-	LabsCSV  string `env:"LABS_CSV,required"`
+	LabsCSV string `env:"LABS_CSV,required"`
 }
 
 func Start(port string) error {
@@ -107,7 +107,6 @@ func getLabs(c *gin.Context) {
 }
 
 func updateHazards(c *gin.Context) {
-	fmt.Printf("in updateHazards")
 	var chemical chemical.Chemical
 	if err := c.BindJSON(&chemical); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)

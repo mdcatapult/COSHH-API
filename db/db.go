@@ -198,10 +198,14 @@ func DeleteHazards(chemical chemical.Chemical) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("The id is %s", chemical.Id)
+
 	query := `DELETE FROM chemical_to_hazard WHERE id = $1;`
 	_, err = tx.Exec(query, chemical.Id)
-	return err
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
 }
 
 func InsertHazards(chemical chemical.Chemical) error {
@@ -211,7 +215,11 @@ func InsertHazards(chemical chemical.Chemical) error {
 	}
 
 	err = insertHazards(tx, chemical, chemical.Id)
-	return err
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
 }
 
 func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical, id int64) error {
