@@ -84,6 +84,7 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 			c.safety_data_sheet,
 			c.coshh_link,
 			c.lab_location,
+		    c.cupboard,
 			c.storage_temp,
 			c.is_archived,
 			string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
@@ -118,6 +119,7 @@ func UpdateChemical(chemical chemical.Chemical) error {
 		safety_data_sheet = :safety_data_sheet,
 		coshh_link = :coshh_link,
 		lab_location = :lab_location,
+	    cupboard = :cupboard
 		storage_temp = :storage_temp,
 		is_archived = :is_archived
 	WHERE id = :id
@@ -158,6 +160,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 		safety_data_sheet,
 		coshh_link,
 		lab_location,
+        cupboard,
 		storage_temp,
 		is_archived 
 	)VALUES (
@@ -171,6 +174,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 		:safety_data_sheet,
 		:coshh_link,
 		:lab_location,
+		:cupboard,
 		:storage_temp,
 		:is_archived
 	) RETURNING id`

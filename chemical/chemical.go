@@ -14,6 +14,7 @@ type Chemical struct {
 	SafetyDataSheet *string    `json:"safetyDataSheet" db:"safety_data_sheet"`
 	CoshhLink       *string    `json:"coshhLink" db:"coshh_link"`
 	Location        *string    `json:"location" db:"lab_location"`
+	Cupboard        *string    `json:"cupboard" db:"cupboard"`
 	StorageTemp     string     `json:"storageTemp" db:"storage_temp"`
 	IsArchived      bool       `json:"isArchived" db:"is_archived"`
 	Hazards         []string   `json:"hazards" db:"-"`
