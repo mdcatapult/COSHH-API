@@ -6,7 +6,7 @@ type Chemical struct {
 	Id              int64      `json:"id" db:"id"`
 	CasNumber       *string    `json:"casNumber" db:"cas_number"`
 	Name            string     `json:"name" db:"chemical_name"`
-	PhotoPath       *string    `json:"photoPath" db:"photo_path"`
+	ChemicalNumber  *string    `json:"chemicalNumber" db:"chemical_number"`
 	MatterState     *string    `json:"matterState" db:"matter_state"`
 	Quantity        *string    `json:"quantity" db:"quantity"`
 	Added           *time.Time `json:"added" db:"added"`

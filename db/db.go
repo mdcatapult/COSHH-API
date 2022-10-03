@@ -76,7 +76,7 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 			c.id,
 			c.cas_number,
 			c.chemical_name,
-			c.photo_path,
+			c.chemical_number,
 			c.matter_state,
 			c.quantity,
 			c.added,
@@ -110,7 +110,7 @@ func UpdateChemical(chemical chemical.Chemical) error {
 	SET 
 		cas_number = :cas_number,
 		chemical_name = :chemical_name,
-		photo_path = :photo_path,
+		chemical_number = :chemical_number,
 		matter_state = :matter_state,
 		quantity = :quantity,
 		added = :added,
@@ -150,7 +150,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 	query := `INSERT INTO chemical (
 		cas_number,
 		chemical_name,
-		photo_path,
+		chemical_number,
 		matter_state,
 		quantity,
 		added,
@@ -163,7 +163,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 	)VALUES (
 		:cas_number,
 		:chemical_name,
-		:photo_path,
+		:chemical_number,
 		:matter_state,
 		:quantity,
 		:added,
