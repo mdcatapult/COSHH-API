@@ -119,7 +119,7 @@ func UpdateChemical(chemical chemical.Chemical) error {
 		safety_data_sheet = :safety_data_sheet,
 		coshh_link = :coshh_link,
 		lab_location = :lab_location,
-	    cupboard = :cupboard
+	    cupboard = :cupboard,
 		storage_temp = :storage_temp,
 		is_archived = :is_archived
 	WHERE id = :id
