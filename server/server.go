@@ -13,10 +13,13 @@ import (
 	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
 )
 
+// TODO these shouldn't be hard-coded
 var labs_csv = "/mnt/labs.csv"
+var projects_csv = "/mnt/projects.csv"
 
 type Config struct {
-	LabsCSV string `env:"LABS_CSV,required"`
+	LabsCSV     string `env:"LABS_CSV,required"`
+	ProjectsCSV string `env:"PROJECTS_CSV, required"`
 }
 
 func Start(port string) error {
@@ -29,6 +32,7 @@ func Start(port string) error {
 	} else {
 		fmt.Println("Using config from env vars")
 		labs_csv = config.LabsCSV
+		projects_csv = config.ProjectsCSV
 	}
 	r := gin.Default()
 	r.Use(corsMiddleware())
@@ -37,9 +41,11 @@ func Start(port string) error {
 	r.PUT("/chemical", updateChemical)
 	r.POST("/chemical", insertChemical)
 
+	r.PUT("/hazards", updateHazards)
+
 	r.GET("/labs", getLabs)
 
-	r.PUT("/hazards", updateHazards)
+	r.GET("/projects", getProjects)
 
 	return r.Run(port)
 }
@@ -87,25 +93,6 @@ func insertChemical(c *gin.Context) {
 	c.JSON(http.StatusOK, chemical)
 }
 
-func getLabs(c *gin.Context) {
-	labsFile, err := os.Open(labs_csv)
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	defer labsFile.Close()
-
-	csvReader := csv.NewReader(labsFile)
-	labs, err := csvReader.Read()
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, labs)
-}
-
 func updateHazards(c *gin.Context) {
 	var chemical chemical.Chemical
 	if err := c.BindJSON(&chemical); err != nil {
@@ -126,6 +113,45 @@ func updateHazards(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, chemical)
+}
+
+func getLabs(c *gin.Context) {
+
+	labsFile, err := os.Open(labs_csv)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	defer labsFile.Close()
+
+	csvReader := csv.NewReader(labsFile)
+	labs, err := csvReader.Read()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, labs)
+}
+
+func getProjects(c *gin.Context) {
+	projectsFile, err := os.Open(projects_csv)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	defer projectsFile.Close()
+
+	csvReader := csv.NewReader(projectsFile)
+	projects, err := csvReader.ReadAll()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, projects)
 }
 
 func corsMiddleware() gin.HandlerFunc {
