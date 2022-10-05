@@ -10,6 +10,7 @@ COPY db ./db
 COPY server ./server
 
 COPY labs.csv /mnt
+COPY projects_141022.csv /mnt
 
 RUN go build -o coshh
 
