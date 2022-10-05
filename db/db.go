@@ -87,7 +87,8 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 		    c.cupboard,
 			c.storage_temp,
 			c.is_archived,
-		    c.project_specific,
+		    c.project_code,
+		    c.project_name,
 			string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
 		FROM chemical c 
 		LEFT JOIN chemical_to_hazard c2h ON c.id = c2h.id 
@@ -123,7 +124,9 @@ func UpdateChemical(chemical chemical.Chemical) error {
 	    cupboard = :cupboard,
 		storage_temp = :storage_temp,
 		is_archived = :is_archived,
-		project_specific = :project_specific
+   		project_code = :project_code,
+		project_name = :project_name
+
 	WHERE id = :id
 `
 
@@ -165,7 +168,8 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
         cupboard,
 		storage_temp,
 		is_archived,
-        project_specific
+        project_code,
+        project_name
 	)VALUES (
 		:cas_number,
 		:chemical_name,
@@ -180,7 +184,8 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 		:cupboard,
 		:storage_temp,
 		:is_archived,
-		:project_specific
+		:project_code,
+		:project_name
 	) RETURNING id`
 
 	rows, err := tx.NamedQuery(query, chemical)
