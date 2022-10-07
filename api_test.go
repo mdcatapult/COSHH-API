@@ -29,8 +29,7 @@ var chem = chemical.Chemical{
 	SafetyDataSheet: stringPtr(""),
 	StorageTemp:     "+4",
 	IsArchived:      false,
-	ProjectCode:     stringPtr(""),
-	ProjectName:     stringPtr(""),
+	ProjectSpecific: stringPtr(""),
 	Hazards:         []string{"Explosive", "Flammable"},
 }
 
