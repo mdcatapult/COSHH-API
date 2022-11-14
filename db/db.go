@@ -106,6 +106,31 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 	return chemicals, nil
 }
 
+func SelectAllCupboards() ([]string, error) {
+	returnValue := make([]string, 0)
+
+	query := `
+		SELECT
+		    DISTINCT c.cupboard
+		FROM chemical c
+	`
+	rows, err := db.Query(query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var value string
+		if err := rows.Scan(&value); err != nil {
+			return nil, err
+		}
+		returnValue = append(returnValue, value)
+	}
+
+	return returnValue, nil
+}
+
 func UpdateChemical(chemical chemical.Chemical) error {
 	query := `
 	UPDATE chemical 

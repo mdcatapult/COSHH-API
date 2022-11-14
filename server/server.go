@@ -41,6 +41,8 @@ func Start(port string) error {
 	r.PUT("/chemical", updateChemical)
 	r.POST("/chemical", insertChemical)
 
+	r.GET("/cupboards", getCupboards)
+
 	r.PUT("/hazards", updateHazards)
 
 	r.GET("/labs", getLabs)
@@ -91,6 +93,16 @@ func insertChemical(c *gin.Context) {
 	chemical.Id = id
 
 	c.JSON(http.StatusOK, chemical)
+}
+
+func getCupboards(c *gin.Context) {
+	values, err := db.SelectAllCupboards()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, values)
 }
 
 func updateHazards(c *gin.Context) {
