@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -128,6 +129,7 @@ func SelectAllCupboards() ([]string, error) {
 		returnValue = append(returnValue, value)
 	}
 
+	sort.Strings(returnValue)
 	return returnValue, nil
 }
 
