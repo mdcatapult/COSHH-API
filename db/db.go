@@ -121,18 +121,9 @@ func SelectAllCupboards() ([]string, error) {
 		FROM %s.chemical c
 	`, SCHEMA,  // DO NOT allow user input in raw SQL
 	)
-	rows, err := db.Query(query)
 
-	if err != nil {
+	if err := db.Select(&returnValue, query); err != nil {
 		return nil, err
-	}
-
-	for rows.Next() {
-		var value string
-		if err := rows.Scan(&value); err != nil {
-			return nil, err
-		}
-		returnValue = append(returnValue, value)
 	}
 
 	sort.Strings(returnValue)
