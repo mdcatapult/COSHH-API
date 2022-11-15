@@ -14,6 +14,8 @@ import (
 
 var db *sqlx.DB
 
+const SCHEMA = "coshh"
+
 type Config struct {
 	Port     int    `env:"PORT,required"`
 	User     string `env:"USER,default=postgres,required"`
@@ -29,7 +31,7 @@ func Connect(host string) error {
 		password = "postgres"
 		dbname   = "informatics"
 		retries  = 3
-		schema   = "coshh"
+		schema   = SCHEMA
 	)
 
 	ctx := context.Background()
@@ -72,7 +74,7 @@ func Connect(host string) error {
 
 func SelectAllChemicals() ([]chemical.Chemical, error) {
 	chemicals := make([]chemical.Chemical, 0)
-	query := `
+	query := fmt.Sprintf(`
 		SELECT 
 			c.id,
 			c.cas_number,
@@ -90,9 +92,12 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 			c.is_archived,
 		    c.project_specific,
 			string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
-		FROM chemical c 
-		LEFT JOIN chemical_to_hazard c2h ON c.id = c2h.id 
-		GROUP BY c.id`
+		FROM %s.chemical c
+		LEFT JOIN %s.chemical_to_hazard c2h ON c.id = c2h.id
+		GROUP BY c.id`,
+		SCHEMA,  // DO NOT allow user input in raw SQL
+		SCHEMA,  // it can expose SQL injection
+	)
 
 	if err := db.Select(&chemicals, query); err != nil {
 		return nil, err
@@ -110,11 +115,12 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 func SelectAllCupboards() ([]string, error) {
 	returnValue := make([]string, 0)
 
-	query := `
+	query := fmt.Sprintf(`
 		SELECT
 		    DISTINCT c.cupboard
-		FROM chemical c
-	`
+		FROM %s.chemical c
+	`, SCHEMA,  // DO NOT allow user input in raw SQL
+	)
 	rows, err := db.Query(query)
 
 	if err != nil {
@@ -134,8 +140,8 @@ func SelectAllCupboards() ([]string, error) {
 }
 
 func UpdateChemical(chemical chemical.Chemical) error {
-	query := `
-	UPDATE chemical 
+	query := fmt.Sprintf(`
+	UPDATE %s.chemical
 	SET 
 		cas_number = :cas_number,
 		chemical_name = :chemical_name,
@@ -153,7 +159,8 @@ func UpdateChemical(chemical chemical.Chemical) error {
 		project_specific = :project_specific
 
 	WHERE id = :id
-`
+`, SCHEMA,  // DO NOT allow user input in raw sql
+		)
 
 	_, err := db.NamedExec(query, chemical)
 	return err
@@ -179,7 +186,7 @@ func InsertChemical(chemical chemical.Chemical) (id int64, err error) {
 }
 
 func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err error) {
-	query := `INSERT INTO chemical (
+	query := fmt.Sprintf(`INSERT INTO %s.chemical (
 		cas_number,
 		chemical_name,
 		chemical_number,
@@ -209,7 +216,9 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 		:storage_temp,
 		:is_archived,
 		:project_specific
-	) RETURNING id`
+	) RETURNING id`,
+		SCHEMA,  // DO NOT allow user input in raw SQL
+	)
 
 	rows, err := tx.NamedQuery(query, chemical)
 	if err != nil {
@@ -235,7 +244,7 @@ func DeleteHazards(chemical chemical.Chemical) error {
 		return err
 	}
 
-	query := `DELETE FROM chemical_to_hazard WHERE id = $1;`
+	query := fmt.Sprintf(`DELETE FROM %s.chemical_to_hazard WHERE id = $1;`, SCHEMA)  // DO NOT allow user input in raw SQL
 	_, err = tx.Exec(query, chemical.Id)
 	if err != nil {
 		return err
@@ -267,7 +276,7 @@ func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical, id int64) error {
 
 	chemicalToHazards := make([]chemicalToHazard, 0)
 
-	query := `INSERT INTO chemical_to_hazard (id, hazard) VALUES (:id, :hazard)`
+	query := fmt.Sprintf(`INSERT INTO %s.chemical_to_hazard (id, hazard) VALUES (:id, :hazard)`, SCHEMA)  // DO NOT allow user input in raw SQL
 
 	for _, hazard := range chemical.Hazards {
 		chemicalToHazards = append(chemicalToHazards, chemicalToHazard{
