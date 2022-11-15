@@ -120,6 +120,24 @@ func TestPutChemical(t *testing.T) {
 	assert.Equal(t, putChem, responseChemical)
 }
 
+func TestGetCupboards(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/cupboards", nil)
+	assert.Nil(t, err, "Failed to build GET request")
+
+	response, err := client.Do(req)
+	assert.Nil(t, err, "Failed to send GET request")
+
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	assert.Nil(t, err, "Failed to read message body")
+
+	var responseValues []string
+	err = json.Unmarshal(bodyBytes, &responseValues)
+	assert.Nil(t, err, "Failed to unmarshal into string")
+
+	assert.Equal(t, *chem.Cupboard, responseValues[0])
+
+}
+
 func TestPutHazards(t *testing.T) {
 	putChem := chem
 	putChem.Hazards = []string{"Corrosive", "Serious health hazard"}
