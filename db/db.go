@@ -95,8 +95,8 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 		FROM %s.chemical c
 		LEFT JOIN %s.chemical_to_hazard c2h ON c.id = c2h.id
 		GROUP BY c.id`,
-		SCHEMA,  // DO NOT allow user input in raw SQL
-		SCHEMA,  // it can expose SQL injection
+		SCHEMA, // DO NOT allow user input in raw SQL
+		SCHEMA, // it can expose SQL injection
 	)
 
 	if err := db.Select(&chemicals, query); err != nil {
@@ -117,12 +117,13 @@ func SelectAllCupboards() ([]string, error) {
 
 	query := fmt.Sprintf(`
 		SELECT
-		    DISTINCT c.cupboard
+		    DISTINCT COALESCE(c.cupboard, '')
 		FROM %s.chemical c
-	`, SCHEMA,  // DO NOT allow user input in raw SQL
+	`, SCHEMA, // DO NOT allow user input in raw SQL
 	)
 
 	if err := db.Select(&returnValue, query); err != nil {
+		fmt.Println("OI!!!!")
 		return nil, err
 	}
 
@@ -150,8 +151,8 @@ func UpdateChemical(chemical chemical.Chemical) error {
 		project_specific = :project_specific
 
 	WHERE id = :id
-`, SCHEMA,  // DO NOT allow user input in raw sql
-		)
+`, SCHEMA, // DO NOT allow user input in raw sql
+	)
 
 	_, err := db.NamedExec(query, chemical)
 	return err
@@ -208,7 +209,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 		:is_archived,
 		:project_specific
 	) RETURNING id`,
-		SCHEMA,  // DO NOT allow user input in raw SQL
+		SCHEMA, // DO NOT allow user input in raw SQL
 	)
 
 	rows, err := tx.NamedQuery(query, chemical)
@@ -235,7 +236,7 @@ func DeleteHazards(chemical chemical.Chemical) error {
 		return err
 	}
 
-	query := fmt.Sprintf(`DELETE FROM %s.chemical_to_hazard WHERE id = $1;`, SCHEMA)  // DO NOT allow user input in raw SQL
+	query := fmt.Sprintf(`DELETE FROM %s.chemical_to_hazard WHERE id = $1;`, SCHEMA) // DO NOT allow user input in raw SQL
 	_, err = tx.Exec(query, chemical.Id)
 	if err != nil {
 		return err
@@ -267,7 +268,7 @@ func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical, id int64) error {
 
 	chemicalToHazards := make([]chemicalToHazard, 0)
 
-	query := fmt.Sprintf(`INSERT INTO %s.chemical_to_hazard (id, hazard) VALUES (:id, :hazard)`, SCHEMA)  // DO NOT allow user input in raw SQL
+	query := fmt.Sprintf(`INSERT INTO %s.chemical_to_hazard (id, hazard) VALUES (:id, :hazard)`, SCHEMA) // DO NOT allow user input in raw SQL
 
 	for _, hazard := range chemical.Hazards {
 		chemicalToHazards = append(chemicalToHazards, chemicalToHazard{
