@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/chemical"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/server"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/chemical"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/db"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/server"
 )
 
 var chem = chemical.Chemical{

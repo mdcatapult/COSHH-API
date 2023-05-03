@@ -9,8 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sethvargo/go-envconfig"
-	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/chemical"
-	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/coshh/db"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/chemical"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/db"
 )
 
 // TODO these shouldn't be hard-coded

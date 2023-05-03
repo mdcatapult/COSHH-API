@@ -1,4 +1,4 @@
-module gitlab.mdcatapult.io/informatics/software-engineering/coshh
+module gitlab.mdcatapult.io/informatics/coshh/coshh-api
 
 go 1.13
 

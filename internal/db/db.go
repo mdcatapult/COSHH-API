@@ -9,7 +9,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/sethvargo/go-envconfig"
-	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/chemical"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/chemical"
 )
 
 var db *sqlx.DB
