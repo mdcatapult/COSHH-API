@@ -4,8 +4,8 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/db"
-	"gitlab.mdcatapult.io/informatics/software-engineering/coshh/server"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/db"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/server"
 )
 
 func main() {
