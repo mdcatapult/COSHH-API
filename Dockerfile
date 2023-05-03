@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
-COPY *.go ./
 COPY cmd ./cmd
 COPY internal/chemical ./internal/chemical
 COPY internal/db ./internal/db
