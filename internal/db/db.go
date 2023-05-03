@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/sethvargo/go-envconfig"
 	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/chemical"
 )
