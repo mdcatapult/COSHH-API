@@ -1,11 +1,11 @@
 package main
 
 import (
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/db"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/server"
 	"log"
 
 	_ "github.com/lib/pq"
-	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/db"
-	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/server"
 )
 
 func main() {

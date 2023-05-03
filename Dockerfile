@@ -5,8 +5,8 @@ WORKDIR /app
 COPY go.mod ./
 COPY go.sum ./
 COPY *.go ./
-COPY chemical ./chemical
-COPY db ./db
+COPY internal/chemical ./internal/chemical
+COPY internal/db ./internal/db
 COPY server ./server
 
 COPY labs.csv /mnt
