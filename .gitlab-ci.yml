@@ -48,7 +48,7 @@ publish-api:
       --context $CI_PROJECT_DIR/api
       --build-arg VERSION_HASH=$CI_COMMIT_SHORT_SHA
       --destination $CI_REGISTRY_IMAGE/api:$CI_COMMIT_REF_SLUG
-      --dockerfile $CI_PROJECT_DIR/api/Dockerfile
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
   except:
     refs:
       - master
@@ -73,7 +73,7 @@ publish-api-master:
       --build-arg VERSION_HASH=$CI_COMMIT_SHORT_SHA
       --destination $CI_REGISTRY_IMAGE/api:$CI_COMMIT_REF_NAME
       --destination $CI_REGISTRY_IMAGE/api:latest
-      --dockerfile $CI_PROJECT_DIR/api/Dockerfile
+      --dockerfile $CI_PROJECT_DIR/Dockerfile
   only:
     refs:
       - tags
