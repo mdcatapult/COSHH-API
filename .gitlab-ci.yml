@@ -45,9 +45,9 @@ publish-api:
   script:
     - >
       /kaniko/executor
-      --context $CI_PROJECT_DIR/api
+      --context $CI_PROJECT_DIR
       --build-arg VERSION_HASH=$CI_COMMIT_SHORT_SHA
-      --destination $CI_REGISTRY_IMAGE/api:$CI_COMMIT_REF_SLUG
+      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
       --dockerfile $CI_PROJECT_DIR/Dockerfile
   except:
     refs:
@@ -69,10 +69,10 @@ publish-api-master:
   script:
     - >
       /kaniko/executor
-      --context $CI_PROJECT_DIR/api
+      --context $CI_PROJECT_DIR
       --build-arg VERSION_HASH=$CI_COMMIT_SHORT_SHA
-      --destination $CI_REGISTRY_IMAGE/api:$CI_COMMIT_REF_NAME
-      --destination $CI_REGISTRY_IMAGE/api:latest
+      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+      --destination $CI_REGISTRY_IMAGE:latest
       --dockerfile $CI_PROJECT_DIR/Dockerfile
   only:
     refs:
