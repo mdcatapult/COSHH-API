@@ -1,3 +1,7 @@
+## COSHH API
+
+This GOLang based application provides the backend API service to complement the [COSHH webapp](https://gitlab.mdcatapult.io/informatics/coshh/coshh-ui). It uses a Postgres Database to store information about chemicals, their hazardous properties, expiry dates and links to safety docs.
+
 ### Running
 
 `make run`
