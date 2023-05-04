@@ -8,7 +8,7 @@ This GOLang based application provides the backend API service to complement the
 
 This starts the API and a local Postgres instance.
 
-By default, the app starts with no data. To populate the app, follow the [ETL guide](assets/etl/README.md). You can also start with an empty db if you prefer.
+By default, the app starts with no data. To populate the app, follow the [ETL guide](scripts/etl/README.md). You can also start with an empty db if you prefer. The Postgres docker container uses an [sql script](scripts/init.sql) to create the schema.
 
 ### Debugging
 You can run it all using the docker-compose file (use within the `make run` task above) or start up your locally changed versions of the components using `docker compose up -d`. This will build your local version of the app and run it via docker.  
