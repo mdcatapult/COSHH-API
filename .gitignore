@@ -1,7 +1,4 @@
-ui/.angular/cache/*
 .idea
 *.DS_Store
-api/coshh
-ui/dist
-ui/node_modules
+coshh
 *.swp
