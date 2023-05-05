@@ -84,7 +84,7 @@ release-api:
   stage: release-api
   image: registry.mdcatapult.io/informatics/docker-images/ci/golang
   script:
-    - release.sh
+    - cictl exec release golang
   only:
     refs:
       - master
