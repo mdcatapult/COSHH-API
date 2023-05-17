@@ -56,6 +56,9 @@ func Start(port string) error {
 
 	r.GET("/projects", getProjects)
 
+	//This route is here to allow standalone testing of authentication using curl
+	r.GET("/protected", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), protectedRoute)
+
 	return r.Run(port)
 }
 
@@ -171,6 +174,11 @@ func getProjects(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, projects)
+}
+
+// Purely for auth testing
+func protectedRoute(c *gin.Context) {
+	c.JSON(http.StatusOK, "You have successfully authenticated")
 }
 
 func corsMiddleware() gin.HandlerFunc {

@@ -58,6 +58,15 @@ psql -h localhost -U postgres -d informatics        \\ password is postgres
 SET schema 'coshh';                                 
 ```
 
+### Testing Authenticated Routes
+Get the Auth0 client token from the Auth0 web portal. Use curl to auth against the example `protected` route.
+```bash
+curl --request GET \
+  --url http:/localhost:8080/protected \
+  --header 'authorization: Bearer INSERT AUTH0 TOKEN'
+```  
+Successful auth results in `"You have successfully authenticated"`. Failure to auth results in `{"message":"Requires authentication"}`.
+
 ### Gotchas
 
 #### SQL
