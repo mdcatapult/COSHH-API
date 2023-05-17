@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/csv"
 	"fmt"
+	"github.com/auth0-developer-hub/api_standard-library_golang_hello-world/pkg/middleware"
+	adapter "github.com/gwatts/gin-adapter"
 	"net/http"
 	"os"
 
@@ -18,8 +20,12 @@ var labs_csv = "/mnt/labs.csv"
 var projects_csv = "/mnt/projects.csv"
 
 type Config struct {
-	LabsCSV     string `env:"LABS_CSV,required"`
-	ProjectsCSV string `env:"PROJECTS_CSV, required"`
+	LabsCSV         string `env:"LABS_CSV,required"`
+	ProjectsCSV     string `env:"PROJECTS_CSV,required"`
+	APIPort         int    `env:"PORT,required"`
+	ClientOriginURL string `env:"CLIENT_ORIGIN_URL,required"`
+	Auth0Audience   string `env:"AUTH0_AUDIENCE,required"`
+	Auth0Domain     string `env:"AUTH0_DOMAIN,required"`
 }
 
 func Start(port string) error {
@@ -38,12 +44,13 @@ func Start(port string) error {
 	r.Use(corsMiddleware())
 
 	r.GET("/chemicals", getChemicals)
-	r.PUT("/chemical", updateChemical)
-	r.POST("/chemical", insertChemical)
+	r.PUT("/chemical", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), updateChemical)
 
-	r.GET("/cupboards", getCupboards)
+	r.POST("/chemical", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), insertChemical)
 
-	r.PUT("/hazards", updateHazards)
+	r.GET("/cupboards", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), getCupboards)
+
+	r.PUT("/hazards", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), updateHazards)
 
 	r.GET("/labs", getLabs)
 
