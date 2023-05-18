@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/csv"
 	"fmt"
-	"github.com/auth0-developer-hub/api_standard-library_golang_hello-world/pkg/middleware"
 	adapter "github.com/gwatts/gin-adapter"
 	"net/http"
 	"os"
@@ -28,7 +27,23 @@ type Config struct {
 	Auth0Domain     string `env:"AUTH0_DOMAIN,required"`
 }
 
-func Start(port string) error {
+type ThirdPartyInterface interface {
+	ValidateJWT(audience, domain string) func(next http.Handler) http.Handler
+}
+
+type MyService struct {
+	client ThirdPartyInterface
+}
+
+func New(client ThirdPartyInterface) MyService {
+	return MyService{client}
+}
+
+type (
+	jwtValidator func(audience string, domain string) func(next http.Handler) http.Handler
+)
+
+func Start(port string, validator jwtValidator) error {
 
 	ctx := context.Background()
 	var config Config
@@ -44,20 +59,20 @@ func Start(port string) error {
 	r.Use(corsMiddleware())
 
 	r.GET("/chemicals", getChemicals)
-	r.PUT("/chemical", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), updateChemical)
+	r.PUT("/chemical", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateChemical)
 
-	r.POST("/chemical", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), insertChemical)
+	r.POST("/chemical", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), insertChemical)
 
-	r.GET("/cupboards", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), getCupboards)
+	r.GET("/cupboards", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), getCupboards)
 
-	r.PUT("/hazards", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), updateHazards)
+	r.PUT("/hazards", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateHazards)
 
 	r.GET("/labs", getLabs)
 
 	r.GET("/projects", getProjects)
 
 	//This route is here to allow standalone testing of authentication using curl
-	r.GET("/protected", adapter.Wrap(middleware.ValidateJWT(config.Auth0Audience, config.Auth0Domain)), protectedRoute)
+	r.GET("/protected", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), protectedRoute)
 
 	return r.Run(port)
 }

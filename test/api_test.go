@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -39,12 +40,24 @@ func stringPtr(v string) *string {
 
 var client = &http.Client{}
 
+// Mock response from the JWT validation since the tests don't use the Auth service
+var validator = func(audience string, domain string) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		fmt.Println("Inside first handler")
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Println("Inside next handler")
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 func TestMain(m *testing.M) {
+
 	if err := db.Connect("localhost"); err != nil {
 		log.Fatal("Failed to start DB", err)
 	}
 	go func() {
-		if err := server.Start(":8081"); err != nil {
+		if err := server.Start(":8081", validator); err != nil {
 			log.Fatal("Failed to start server", err)
 		}
 	}()
