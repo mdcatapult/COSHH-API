@@ -27,18 +27,6 @@ type Config struct {
 	Auth0Domain     string `env:"AUTH0_DOMAIN,required"`
 }
 
-type ThirdPartyInterface interface {
-	ValidateJWT(audience, domain string) func(next http.Handler) http.Handler
-}
-
-type MyService struct {
-	client ThirdPartyInterface
-}
-
-func New(client ThirdPartyInterface) MyService {
-	return MyService{client}
-}
-
 type (
 	jwtValidator func(audience string, domain string) func(next http.Handler) http.Handler
 )
