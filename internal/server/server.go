@@ -51,7 +51,7 @@ func Start(port string, validator jwtValidator) error {
 
 	r.POST("/chemical", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), insertChemical)
 
-	r.GET("/cupboards", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), getCupboards)
+	r.GET("/cupboards", getCupboards)
 
 	r.PUT("/hazards", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateHazards)
 
