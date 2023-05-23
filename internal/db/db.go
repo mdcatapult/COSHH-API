@@ -17,52 +17,56 @@ var db *sqlx.DB
 
 var config Config
 
+//var (
+//	port     = 5432
+//	user     = "postgres"
+//	password = "postgres"
+//	dbname   = "informatics"
+//	retries  = 3
+//	schema   = "coshh"
+//)
+
 type Config struct {
-	Port     int    `env:"PORT,required"`
-	User     string `env:"USER,default=postgres,required"`
-	Password string `env:"PASSWORD,required"`
-	DbName   string `env:"DBNAME,required"`
-	Host     string `env:"HOST,required"`
-	Schema   string `env:"SCHEMA,required"`
+	Port     int    `env:"PORT,default=5432"`
+	User     string `env:"USER,default=postgres"`
+	Password string `env:"PASSWORD,default=postgres"`
+	DbName   string `env:"DBNAME,default=informatics"`
+	Host     string `env:"HOST,default=localhost"`
+	Schema   string `env:"SCHEMA,default=coshh"`
+	Retries  int    `env:"RETRIES,default=3"`
 }
 
-func Connect(host string) error {
-	var (
-		port     = 5432
-		user     = "postgres"
-		password = "postgres"
-		dbname   = "informatics"
-		retries  = 3
-		schema   = "coshh"
-	)
+func Connect() error {
 
 	ctx := context.Background()
 	//var config Config
 
 	if err := envconfig.Process(ctx, &config); err != nil {
 		fmt.Println("Env vars unset or incorrect, using default config")
-	} else {
-		fmt.Println("Using config from env vars")
-		host = config.Host
-		port = config.Port
-		user = config.User
-		password = config.Password
-		dbname = config.DbName
-		schema = config.Schema
 	}
+	//else {
+	//	fmt.Println("Using config from env vars")
+	//	host = config.Host
+	//	port = config.Port
+	//	user = config.User
+	//	password = config.Password
+	//	dbname = config.DbName
+	//	schema = config.Schema
+	//}
+	fmt.Printf("host=%s port=%d user=%s password=%s dbname=%s schema=%s", config.Host, config.Port, config.User, config.Password, config.DbName, config.Schema)
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", config.Host, config.Port, config.User, config.Password, config.DbName)
 
 	var err error
-	for i := 1; i < retries; i++ {
+	for i := 1; i < config.Retries; i++ {
 		db, err = sqlx.Connect("postgres", psqlInfo)
 		if err == nil {
-			_, err = db.Exec(fmt.Sprintf("set search_path=%s", schema))
+			_, err = db.Exec(fmt.Sprintf("set search_path=%s", config.Schema))
 			if err != nil {
-				fmt.Printf("Failed to set search path to schema: %s\n", schema)
+				fmt.Printf("Failed to set search path to schema: %s\n", config.Schema)
 				return err
 			}
-			fmt.Printf("Connected to database: %s, schema: %s\n", dbname, schema)
+			fmt.Printf("Connected to database: %s, schema: %s\n", config.DbName, config.Schema)
 
 			break
 		}
@@ -126,7 +130,6 @@ func SelectAllCupboards() ([]string, error) {
 	)
 
 	if err := db.Select(&returnValue, query); err != nil {
-		fmt.Println("OI!!!!")
 		return nil, err
 	}
 
@@ -181,6 +184,7 @@ func InsertChemical(chemical chemical.Chemical) (id int64, err error) {
 }
 
 func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err error) {
+	fmt.Printf("Chem Schema=%s", config.Schema)
 	query := fmt.Sprintf(`INSERT INTO %s.chemical (
 		cas_number,
 		chemical_name,

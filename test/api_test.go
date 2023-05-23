@@ -50,7 +50,7 @@ var validator = func(audience string, domain string) func(next http.Handler) htt
 
 func TestMain(m *testing.M) {
 
-	if err := db.Connect("localhost"); err != nil {
+	if err := db.Connect(); err != nil {
 		log.Fatal("Failed to start DB", err)
 	}
 	go func() {

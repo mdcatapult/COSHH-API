@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	if err := db.Connect("db"); err != nil {
+	if err := db.Connect(); err != nil {
 		log.Fatal("Failed to start DB", err)
 	}
 
