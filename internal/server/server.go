@@ -14,9 +14,7 @@ import (
 	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/db"
 )
 
-// TODO these shouldn't be hard-coded
-var labs_csv = "/mnt/labs.csv"
-var projects_csv = "/mnt/projects.csv"
+var config Config
 
 type Config struct {
 	LabsCSV         string `env:"LABS_CSV,required"`
@@ -34,14 +32,11 @@ type (
 func Start(port string, validator jwtValidator) error {
 
 	ctx := context.Background()
-	var config Config
 
 	if err := envconfig.Process(ctx, &config); err != nil {
-		fmt.Println("Env vars unset or incorrect, using default config")
+		fmt.Println("Server start env vars unset or incorrect, using default config")
 	} else {
 		fmt.Println("Using config from env vars")
-		labs_csv = config.LabsCSV
-		projects_csv = config.ProjectsCSV
 	}
 	r := gin.Default()
 	r.Use(corsMiddleware())
@@ -143,7 +138,7 @@ func updateHazards(c *gin.Context) {
 
 func getLabs(c *gin.Context) {
 
-	labsFile, err := os.Open(labs_csv)
+	labsFile, err := os.Open(config.LabsCSV)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -162,7 +157,7 @@ func getLabs(c *gin.Context) {
 }
 
 func getProjects(c *gin.Context) {
-	projectsFile, err := os.Open(projects_csv)
+	projectsFile, err := os.Open(config.ProjectsCSV)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return

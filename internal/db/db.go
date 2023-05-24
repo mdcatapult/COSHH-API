@@ -17,15 +17,6 @@ var db *sqlx.DB
 
 var config Config
 
-//var (
-//	port     = 5432
-//	user     = "postgres"
-//	password = "postgres"
-//	dbname   = "informatics"
-//	retries  = 3
-//	schema   = "coshh"
-//)
-
 type Config struct {
 	Port     int    `env:"PORT,default=5432"`
 	User     string `env:"USER,default=postgres"`
@@ -39,21 +30,11 @@ type Config struct {
 func Connect() error {
 
 	ctx := context.Background()
-	//var config Config
 
 	if err := envconfig.Process(ctx, &config); err != nil {
-		fmt.Println("Env vars unset or incorrect, using default config")
+		fmt.Println(" DB connect env vars unset or incorrect, using default config")
 	}
-	//else {
-	//	fmt.Println("Using config from env vars")
-	//	host = config.Host
-	//	port = config.Port
-	//	user = config.User
-	//	password = config.Password
-	//	dbname = config.DbName
-	//	schema = config.Schema
-	//}
-	fmt.Printf("host=%s port=%d user=%s password=%s dbname=%s schema=%s", config.Host, config.Port, config.User, config.Password, config.DbName, config.Schema)
+	fmt.Printf("host=%s port=%d user=%s password=%s dbname=%s schema=%s\n", config.Host, config.Port, config.User, config.Password, config.DbName, config.Schema)
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", config.Host, config.Port, config.User, config.Password, config.DbName)
 
