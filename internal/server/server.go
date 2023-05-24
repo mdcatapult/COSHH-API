@@ -3,8 +3,8 @@ package server
 import (
 	"context"
 	"encoding/csv"
-	"fmt"
 	adapter "github.com/gwatts/gin-adapter"
+	"log"
 	"net/http"
 	"os"
 
@@ -17,8 +17,8 @@ import (
 var config Config
 
 type Config struct {
-	LabsCSV         string `env:"LABS_CSV,required"`
-	ProjectsCSV     string `env:"PROJECTS_CSV,required"`
+	LabsCSV         string `env:"LABS_CSV,default=/mnt/labs.csv"`
+	ProjectsCSV     string `env:"PROJECTS_CSV,default=/mnt/projects.csv"`
 	APIPort         int    `env:"PORT,required"`
 	ClientOriginURL string `env:"CLIENT_ORIGIN_URL,required"`
 	Auth0Audience   string `env:"AUTH0_AUDIENCE,required"`
@@ -34,14 +34,14 @@ func Start(port string, validator jwtValidator) error {
 	ctx := context.Background()
 
 	if err := envconfig.Process(ctx, &config); err != nil {
-		fmt.Println("Server start env vars unset or incorrect, using default config")
+		log.Println("Server start env vars unset or incorrect, using default config")
 	} else {
-		fmt.Println("Using config from env vars")
+		log.Println("Server using config from env vars")
 	}
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
-	fmt.Printf("Audience=%s, Domain=%s", config.Auth0Audience, config.Auth0Domain)
+	log.Printf("Server using Audience=%s, Domain=%s", config.Auth0Audience, config.Auth0Domain)
 	r.GET("/chemicals", getChemicals)
 	r.PUT("/chemical", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateChemical)
 
