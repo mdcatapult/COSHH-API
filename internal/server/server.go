@@ -46,6 +46,7 @@ func Start(port string, validator jwtValidator) error {
 	r := gin.Default()
 	r.Use(corsMiddleware())
 
+	fmt.Printf("Audience=%s, Domain=%s", config.Auth0Audience, config.Auth0Domain)
 	r.GET("/chemicals", getChemicals)
 	r.PUT("/chemical", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateChemical)
 
