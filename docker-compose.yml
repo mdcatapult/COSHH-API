@@ -18,8 +18,6 @@ services:
     environment:
       AUTH0_DOMAIN: mdcatapult.eu.auth0.com
       AUTH0_AUDIENCE: https://coshh-api-local.wopr.inf.mdc
-      CLIENT_ORIGIN_URL: http://localhost:4020
-      PORT: 8080
       LABS_CSV: /mnt/labs.csv
       PROJECTS_CSV: /mnt/projects.csv
     volumes:

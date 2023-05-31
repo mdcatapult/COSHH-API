@@ -17,12 +17,10 @@ import (
 var config Config
 
 type Config struct {
-	LabsCSV         string `env:"LABS_CSV,default=/mnt/labs.csv"`
-	ProjectsCSV     string `env:"PROJECTS_CSV,default=/mnt/projects.csv"`
-	APIPort         int    `env:"PORT,required"`
-	ClientOriginURL string `env:"CLIENT_ORIGIN_URL,required"`
-	Auth0Audience   string `env:"AUTH0_AUDIENCE,required"`
-	Auth0Domain     string `env:"AUTH0_DOMAIN,required"`
+	LabsCSV       string `env:"LABS_CSV,default=/mnt/labs.csv"`
+	ProjectsCSV   string `env:"PROJECTS_CSV,default=/mnt/projects.csv"`
+	Auth0Audience string `env:"AUTH0_AUDIENCE,required"`
+	Auth0Domain   string `env:"AUTH0_DOMAIN,required"`
 }
 
 type (

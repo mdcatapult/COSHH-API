@@ -21,6 +21,7 @@ export DBNAME=informatics \
 export HOST=localhost \
 export PASSWORD=postgres \
 export PORT=5432 \
+export API_PORT=8080 \
 export USER=postgres \
 export SCHEMA=coshh \
 export LABS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/labs.csv" \
@@ -64,7 +65,14 @@ SET schema 'coshh';
 ```
 
 ### Testing Authenticated Routes
-Get the Auth0 client token from the Auth0 web portal. Use curl to auth against the example `protected` route.
+Get the Auth0 client token from the Auth0 web portal.
+* Login in to the Auth0 web page.
+* Switch to the correct Auth0 tenant.
+* Go to `Applications` in the sidebar and select `APIs`. 
+* Open the correct API page from the list and click on the `Test` tab. 
+* Copy the access token from the `Response` box. 
+* Use curl to auth against the example `protected` route.
+
 ```bash
 curl --request GET \
   --url http:/localhost:8080/protected \
