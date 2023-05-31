@@ -15,7 +15,10 @@ services:
       dockerfile: Dockerfile
     ports:
      - "8080:8080"
-    volumes: 
+    environment:
+      AUTH0_DOMAIN: mdcatapult.eu.auth0.com
+      AUTH0_AUDIENCE: https://coshh-api-local.wopr.inf.mdc
+    volumes:
       - ./assets/labs.csv:/mnt/labs.csv
       - ./assets/projects_041022.csv:/mnt/projects.csv
 
