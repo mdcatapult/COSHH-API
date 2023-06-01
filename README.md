@@ -21,10 +21,16 @@ export DBNAME=informatics \
 export HOST=localhost \
 export PASSWORD=postgres \
 export PORT=5432 \
+export API_PORT=8080 \
 export USER=postgres \
+export SCHEMA=coshh \
 export LABS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/labs.csv" \
-export PROJECTS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/projects_041022.csv"
+export PROJECTS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/projects_041022.csv" \
+export Auth0Audience="https://coshh-api-local.wopr.inf.mdc" \
+export Auth0Domain="mdcatapult.eu.auth0.com"
 ``` 
+
+`Auth0Audience` is the identifier used in the Auth0 setup page for the particular API within the chosen `Auth0Domain`.
 
 Start the database:
 ```bash
@@ -57,6 +63,22 @@ Ensure you set the schema, e.g.
 psql -h localhost -U postgres -d informatics        \\ password is postgres
 SET schema 'coshh';                                 
 ```
+
+### Testing Authenticated Routes
+Get the Auth0 client token from the Auth0 web portal.
+* Login in to the Auth0 web page.
+* Switch to the correct Auth0 tenant.
+* Go to `Applications` in the sidebar and select `APIs`. 
+* Open the correct API page from the list and click on the `Test` tab. 
+* Copy the access token from the `Response` box. 
+* Use curl to auth against the example `protected` route.
+
+```bash
+curl --request GET \
+  --url http:/localhost:8080/protected \
+  --header 'authorization: Bearer INSERT AUTH0 TOKEN'
+```  
+Successful auth results in `"You have successfully authenticated"`. Failure to auth results in `{"message":"Requires authentication"}`.
 
 ### Gotchas
 

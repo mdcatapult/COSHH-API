@@ -39,12 +39,22 @@ func stringPtr(v string) *string {
 
 var client = &http.Client{}
 
+// Mock response from the JWT validation since the tests don't use the Auth service
+var validator = func(audience string, domain string) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 func TestMain(m *testing.M) {
-	if err := db.Connect("localhost"); err != nil {
+
+	if err := db.Connect(); err != nil {
 		log.Fatal("Failed to start DB", err)
 	}
 	go func() {
-		if err := server.Start(":8081"); err != nil {
+		if err := server.Start(":8081", validator); err != nil {
 			log.Fatal("Failed to start server", err)
 		}
 	}()
