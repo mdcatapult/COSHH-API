@@ -84,8 +84,8 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 		FROM %s.chemical c
 		LEFT JOIN %s.chemical_to_hazard c2h ON c.id = c2h.id
 		GROUP BY c.id`,
-		config.Schema, // DO NOT allow user input in raw SQL
-		config.Schema, // it can expose SQL injection
+		config.Schema,
+		config.Schema,
 	)
 
 	if err := db.Select(&chemicals, query); err != nil {
@@ -108,7 +108,7 @@ func SelectAllCupboards() ([]string, error) {
 		SELECT
 		    DISTINCT COALESCE(c.cupboard, '')
 		FROM %s.chemical c
-	`, config.Schema, // DO NOT allow user input in raw SQL
+	`, config.Schema,
 	)
 
 	if err := db.Select(&returnValue, query); err != nil {
@@ -139,7 +139,7 @@ func UpdateChemical(chemical chemical.Chemical) error {
 		project_specific = :project_specific
 
 	WHERE id = :id
-`, config.Schema, // DO NOT allow user input in raw sql
+`, config.Schema,
 	)
 
 	_, err := db.NamedExec(query, chemical)
@@ -198,7 +198,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 		:is_archived,
 		:project_specific
 	) RETURNING id`,
-		config.Schema, // DO NOT allow user input in raw SQL
+		config.Schema,
 	)
 
 	rows, err := tx.NamedQuery(query, chemical)
