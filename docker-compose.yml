@@ -20,6 +20,7 @@ services:
       AUTH0_AUDIENCE: https://coshh-api-local.wopr.inf.mdc
       LABS_CSV: /mnt/labs.csv
       PROJECTS_CSV: /mnt/projects.csv
+      HOST: db
     volumes:
       - ./assets/labs.csv:/mnt/labs.csv
       - ./assets/projects_041022.csv:/mnt/projects.csv
