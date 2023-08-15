@@ -148,6 +148,28 @@ func TestGetCupboards(t *testing.T) {
 
 }
 
+func TestGetCupboardsForLab(t *testing.T) {
+	expectedResponse := []string{"3", "7"}
+	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/lab_cupboards", nil)
+	q := req.URL.Query()
+	q.Add("lab", "Lab 5")
+	req.URL.RawQuery = q.Encode()
+	assert.Nil(t, err, "Failed to build GET request")
+
+	response, err := client.Do(req)
+	assert.Nil(t, err, "Failed to send GET request")
+
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	assert.Nil(t, err, "Failed to read message body")
+
+	var responseValues []string
+	err = json.Unmarshal(bodyBytes, &responseValues)
+	assert.Nil(t, err, "Failed to unmarshal into string")
+
+	assert.Equal(t, expectedResponse, responseValues)
+
+}
+
 func TestPutHazards(t *testing.T) {
 	putChem := chem
 	putChem.Hazards = []string{"Corrosive", "Serious health hazard"}
