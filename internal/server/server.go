@@ -51,10 +51,7 @@ func Start(port string, validator jwtValidator) error {
 
 	r.GET("/labs", getLabs)
 
-	r.GET("/lab_cupboards", func(c *gin.Context) {
-		lab := c.Query("lab")
-		getCupboardsForLab(c, lab)
-	})
+	r.GET("/lab-cupboards", getCupboardsForLab)
 
 	r.GET("/projects", getProjects)
 
@@ -75,8 +72,8 @@ func getChemicals(c *gin.Context) {
 	c.JSON(http.StatusOK, chemicals)
 }
 
-func getCupboardsForLab(c *gin.Context, lab string) {
-
+func getCupboardsForLab(c *gin.Context) {
+	lab := c.Query("lab")
 	chemicals, err := db.GetCupboardsForLab(lab)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
