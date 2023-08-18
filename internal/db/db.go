@@ -119,6 +119,23 @@ func SelectAllCupboards() ([]string, error) {
 	return returnValue, nil
 }
 
+/*
+*
+Given a lab location generate sql query to return all the cupboards for it
+*/
+func GetCupboardsForLab(lab string) ([]string, error) {
+	returnValue := make([]string, 0)
+
+	query := fmt.Sprintf("select DISTINCT cupboard from %s.chemical WHERE lab_location='%s'", config.Schema, lab)
+
+	if err := db.Select(&returnValue, query); err != nil {
+		return nil, err
+	}
+
+	sort.Strings(returnValue)
+	return returnValue, nil
+}
+
 func UpdateChemical(chemical chemical.Chemical) error {
 	query := fmt.Sprintf(`
 	UPDATE %s.chemical

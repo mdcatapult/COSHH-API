@@ -17,13 +17,47 @@ import (
 	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/server"
 )
 
-var chem = chemical.Chemical{
+var cupboardsChem = chemical.Chemical{
 	CasNumber:       stringPtr("12345678"),
 	Name:            "beans",
 	ChemicalNumber:  stringPtr("blueberries"),
 	MatterState:     stringPtr("liquid"),
 	Quantity:        stringPtr("5"),
 	Cupboard:        stringPtr("closet"),
+	Added:           &time.Time{},
+	Expiry:          &time.Time{},
+	SafetyDataSheet: stringPtr(""),
+	StorageTemp:     "+4",
+	IsArchived:      false,
+	ProjectSpecific: stringPtr(""),
+	Hazards:         []string{"Explosive", "Flammable"},
+}
+
+var cupboardsChemOne = chemical.Chemical{
+	CasNumber:       stringPtr("123456789"),
+	Name:            "beans1",
+	ChemicalNumber:  stringPtr("blueberries"),
+	MatterState:     stringPtr("liquid"),
+	Quantity:        stringPtr("5"),
+	Location:        stringPtr("Test Lab"),
+	Cupboard:        stringPtr("3"),
+	Added:           &time.Time{},
+	Expiry:          &time.Time{},
+	SafetyDataSheet: stringPtr(""),
+	StorageTemp:     "+4",
+	IsArchived:      false,
+	ProjectSpecific: stringPtr(""),
+	Hazards:         []string{"Explosive", "Flammable"},
+}
+
+var cupboardsChemTwo = chemical.Chemical{
+	CasNumber:       stringPtr("1234567890"),
+	Name:            "beans2",
+	ChemicalNumber:  stringPtr("blueberries"),
+	MatterState:     stringPtr("liquid"),
+	Quantity:        stringPtr("5"),
+	Location:        stringPtr("Test Lab"),
+	Cupboard:        stringPtr("4"),
 	Added:           &time.Time{},
 	Expiry:          &time.Time{},
 	SafetyDataSheet: stringPtr(""),
@@ -62,12 +96,30 @@ func TestMain(m *testing.M) {
 	// wait for server to start
 	time.Sleep(time.Second * 2)
 
+	InsertTestChemicals()
+
 	status := m.Run()
 	os.Exit(status)
 }
 
+/*
+*
+Test fixtures for cupboards
+*/
+func InsertTestChemicals() {
+
+	_, err := db.InsertChemical(cupboardsChemOne)
+	if err != nil {
+		log.Fatal("Failed to insert chemical", err)
+	}
+	_, err = db.InsertChemical(cupboardsChemTwo)
+	if err != nil {
+		log.Fatal("Failed to insert chemical", err)
+	}
+}
+
 func TestPostChemical(t *testing.T) {
-	jsonChemical, err := json.Marshal(chem)
+	jsonChemical, err := json.Marshal(cupboardsChem)
 	assert.Nil(t, err, "Failed to marshal into chemical")
 
 	req, err := http.NewRequest(http.MethodPost, "http://localhost:8081/chemical", bytes.NewBuffer(jsonChemical))
@@ -82,9 +134,9 @@ func TestPostChemical(t *testing.T) {
 
 	var responseChemical chemical.Chemical
 	err = json.Unmarshal(bodyBytes, &responseChemical)
-	chem.Id = responseChemical.Id
+	cupboardsChem.Id = responseChemical.Id
 	assert.Nil(t, err, "Failed to unmarshal into chemical")
-	assert.Equal(t, chem, responseChemical)
+	assert.Equal(t, cupboardsChem, responseChemical)
 }
 
 func TestGetChemical(t *testing.T) {
@@ -102,7 +154,7 @@ func TestGetChemical(t *testing.T) {
 	assert.Nil(t, err, "Failed to unmarshal into chemical")
 	found := false
 	for _, ch := range responseChemicals {
-		if reflect.DeepEqual(ch, chem) {
+		if reflect.DeepEqual(ch, cupboardsChem) {
 			found = true
 			break
 		}
@@ -111,7 +163,7 @@ func TestGetChemical(t *testing.T) {
 }
 
 func TestPutChemical(t *testing.T) {
-	putChem := chem
+	putChem := cupboardsChem
 	putChem.Name = "bread"
 	jsonChemical, err := json.Marshal(putChem)
 	assert.Nil(t, err, "Failed to marshal into chemical")
@@ -131,6 +183,7 @@ func TestPutChemical(t *testing.T) {
 }
 
 func TestGetCupboards(t *testing.T) {
+	expectedResponse := []string{"3", "4", "closet"}
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/cupboards", nil)
 	assert.Nil(t, err, "Failed to build GET request")
 
@@ -144,12 +197,34 @@ func TestGetCupboards(t *testing.T) {
 	err = json.Unmarshal(bodyBytes, &responseValues)
 	assert.Nil(t, err, "Failed to unmarshal into string")
 
-	assert.Equal(t, *chem.Cupboard, responseValues[0])
+	assert.Equal(t, expectedResponse, responseValues)
+
+}
+
+func TestGetCupboardsForLab(t *testing.T) {
+	expectedResponse := []string{"3", "4"}
+	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/lab-cupboards", nil)
+	q := req.URL.Query()
+	q.Add("lab", "Test Lab")
+	req.URL.RawQuery = q.Encode()
+	assert.Nil(t, err, "Failed to build GET request")
+
+	response, err := client.Do(req)
+	assert.Nil(t, err, "Failed to send GET request")
+
+	bodyBytes, err := ioutil.ReadAll(response.Body)
+	assert.Nil(t, err, "Failed to read message body")
+
+	var responseValues []string
+	err = json.Unmarshal(bodyBytes, &responseValues)
+	assert.Nil(t, err, "Failed to unmarshal into string")
+
+	assert.Equal(t, expectedResponse, responseValues)
 
 }
 
 func TestPutHazards(t *testing.T) {
-	putChem := chem
+	putChem := cupboardsChem
 	putChem.Hazards = []string{"Corrosive", "Serious health hazard"}
 	jsonChemical, err := json.Marshal(putChem)
 	assert.Nil(t, err, "Failed to marshal into chemical")
