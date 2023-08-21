@@ -4,7 +4,11 @@ This GOLang based application provides the backend API service to complement the
 
 ### Running
 
-`make run`
+Copy the `.env_example` file to `.env`.
+
+```bash
+make run
+```
 
 This starts the API and a local Postgres instance.
 
@@ -28,7 +32,7 @@ export LABS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/labs.csv" \
 export PROJECTS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/projects_041022.csv" \
 export Auth0Audience="https://coshh-api-local.wopr.inf.mdc" \
 export Auth0Domain="mdcatapult.eu.auth0.com"
-``` 
+```
 
 `Auth0Audience` is the identifier used in the Auth0 setup page for the particular API within the chosen `Auth0Domain`.
 

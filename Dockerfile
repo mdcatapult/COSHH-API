@@ -1,16 +1,14 @@
-FROM golang:1.16 AS builder
+FROM golang:1.17 AS builder
 
 WORKDIR /app
 
+COPY .env ./
 COPY go.mod ./
 COPY go.sum ./
 COPY cmd ./cmd
 COPY internal/chemical ./internal/chemical
 COPY internal/db ./internal/db
 COPY internal/server ./internal/server
-
-COPY assets/labs.csv /mnt
-COPY assets/projects_041022.csv /mnt/projects.csv
 
 RUN go build -o coshh ./cmd/main.go
 

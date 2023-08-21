@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.2'
 services:
   db:
     image: postgres
@@ -18,10 +18,20 @@ services:
     environment:
       AUTH0_DOMAIN: mdcatapult.eu.auth0.com
       AUTH0_AUDIENCE: https://coshh-api-local.wopr.inf.mdc
-      LABS_CSV: /mnt/labs.csv
-      PROJECTS_CSV: /mnt/projects.csv
+      LABS_CSV: /mnt/${LABS_CSV}
+      PROJECTS_CSV: /mnt/${PROJECTS_CSV}
       HOST: db
     volumes:
-      - ./assets/labs.csv:/mnt/labs.csv
-      - ./assets/projects_041022.csv:/mnt/projects.csv
+      - type: volume
+        source: vast
+        target: ${COSHH_DATA_VOLUME}
+        volume:
+          nocopy: true
 
+
+volumes:
+  vast:
+    driver_opts:
+      type: "nfs"
+      o: "addr=mdc-vast-nfs.medcat.local,nolock,soft,rw"
+      device: ":${COSHH_DATA_SOURCE}"
