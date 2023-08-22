@@ -165,9 +165,11 @@ func UpdateChemical(chemical chemical.Chemical) error {
 		log.Fatal(err)
 	}
 
-	_, err = tx.ExecContext(ctx, query, chemical)
+	_, err = db.NamedExec(query, chemical)
 	if err != nil {
-		tx.Rollback()
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
 
 		return err
 	}
@@ -184,10 +186,18 @@ func InsertChemical(chemical chemical.Chemical) (id int64, err error) {
 
 	id, err = insertChemical(tx, chemical)
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return 0, err
 	}
 
 	if err := insertHazards(tx, chemical, id); err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return 0, err
 	}
 
@@ -249,14 +259,19 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 }
 
 func DeleteHazards(chemical chemical.Chemical) error {
-	tx, err := db.Beginx()
+	ctx := context.Background()
+	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
 	query := fmt.Sprintf(`DELETE FROM %s.chemical_to_hazard WHERE id = $1;`, config.Schema) // DO NOT allow user input in raw SQL
-	_, err = tx.Exec(query, chemical.Id)
+	_, err = tx.ExecContext(ctx, query, chemical.Id)
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return err
 	}
 
@@ -271,6 +286,10 @@ func InsertHazards(chemical chemical.Chemical) error {
 
 	err = insertHazards(tx, chemical, chemical.Id)
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return err
 	}
 
