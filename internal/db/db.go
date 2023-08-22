@@ -159,7 +159,19 @@ func UpdateChemical(chemical chemical.Chemical) error {
 `, config.Schema,
 	)
 
-	_, err := db.NamedExec(query, chemical)
+	ctx := context.Background()
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = tx.ExecContext(ctx, query, chemical)
+	if err != nil {
+		tx.Rollback()
+
+		return err
+	}
+
 	return err
 }
 
