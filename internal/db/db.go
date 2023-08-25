@@ -119,6 +119,23 @@ func SelectAllCupboards() ([]string, error) {
 	return returnValue, nil
 }
 
+/*
+*
+Given a lab location generate sql query to return all the cupboards for it
+*/
+func GetCupboardsForLab(lab string) ([]string, error) {
+	returnValue := make([]string, 0)
+
+	query := fmt.Sprintf("select DISTINCT cupboard from %s.chemical WHERE lab_location='%s'", config.Schema, lab)
+
+	if err := db.Select(&returnValue, query); err != nil {
+		return nil, err
+	}
+
+	sort.Strings(returnValue)
+	return returnValue, nil
+}
+
 func UpdateChemical(chemical chemical.Chemical) error {
 	query := fmt.Sprintf(`
 	UPDATE %s.chemical
@@ -142,7 +159,21 @@ func UpdateChemical(chemical chemical.Chemical) error {
 `, config.Schema,
 	)
 
-	_, err := db.NamedExec(query, chemical)
+	ctx := context.Background()
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = db.NamedExec(query, chemical)
+	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
+		return err
+	}
+
 	return err
 }
 
@@ -155,10 +186,18 @@ func InsertChemical(chemical chemical.Chemical) (id int64, err error) {
 
 	id, err = insertChemical(tx, chemical)
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return 0, err
 	}
 
 	if err := insertHazards(tx, chemical, id); err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return 0, err
 	}
 
@@ -220,14 +259,19 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 }
 
 func DeleteHazards(chemical chemical.Chemical) error {
-	tx, err := db.Beginx()
+	ctx := context.Background()
+	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
 	query := fmt.Sprintf(`DELETE FROM %s.chemical_to_hazard WHERE id = $1;`, config.Schema) // DO NOT allow user input in raw SQL
-	_, err = tx.Exec(query, chemical.Id)
+	_, err = tx.ExecContext(ctx, query, chemical.Id)
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return err
 	}
 
@@ -242,6 +286,10 @@ func InsertHazards(chemical chemical.Chemical) error {
 
 	err = insertHazards(tx, chemical, chemical.Id)
 	if err != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
+			log.Fatalf("update failed: %v, unable to back: %v", err, rollbackErr)
+		}
+
 		return err
 	}
 
