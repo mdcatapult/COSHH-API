@@ -4,7 +4,8 @@ This GOLang based application provides the backend API service to complement the
 
 ### Running
 
-Copy the `.env_example` file to `.env`.
+Copy the `.env_example` file to `.env`. Change the values to match your local setup. For example, point `COSHH_DATA_VOLUME` to where the 
+`assets` data files are stored on your local machine. The `COSHH_DATA_VOLUME` is mounted into the docker container and the files are read from there.
 
 ```bash
 make run
