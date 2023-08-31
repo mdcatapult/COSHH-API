@@ -51,8 +51,6 @@ func Start(port string, validator jwtValidator) error {
 
 	r.GET("/labs", getLabs)
 
-	r.GET("/lab-cupboards", getCupboardsForLab)
-
 	r.GET("/projects", getProjects)
 
 	//This route is here to allow standalone testing of authentication using curl
@@ -72,9 +70,15 @@ func getChemicals(c *gin.Context) {
 	c.JSON(http.StatusOK, chemicals)
 }
 
-func getCupboardsForLab(c *gin.Context) {
+func getCupboards(c *gin.Context) {
+	var chemicals []string
+	var err error
 	lab := c.Query("lab")
-	chemicals, err := db.GetCupboardsForLab(lab)
+	if lab == "" {
+		chemicals, err = db.SelectAllCupboards()
+	} else {
+		chemicals, err = db.GetCupboardsForLab(lab)
+	}
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -113,16 +117,6 @@ func insertChemical(c *gin.Context) {
 	chemical.Id = id
 
 	c.JSON(http.StatusOK, chemical)
-}
-
-func getCupboards(c *gin.Context) {
-	values, err := db.SelectAllCupboards()
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, values)
 }
 
 func updateHazards(c *gin.Context) {

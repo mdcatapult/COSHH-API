@@ -203,7 +203,7 @@ func TestGetCupboards(t *testing.T) {
 
 func TestGetCupboardsForLab(t *testing.T) {
 	expectedResponse := []string{"3", "4"}
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/lab-cupboards", nil)
+	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/cupboards", nil)
 	q := req.URL.Query()
 	q.Add("lab", "Test Lab")
 	req.URL.RawQuery = q.Encode()
