@@ -91,3 +91,10 @@ release-api:
   except:
     variables:
       - "$CI_COMMIT_MESSAGE =~ /^Setting version to.*/"
+
+sast:
+  stage: test-lint-build
+  tags:
+    - wopr
+include:
+  - template: Security/SAST.gitlab-ci.yml
