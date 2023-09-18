@@ -15,7 +15,7 @@ test-lint-build-api:
     POSTGRES_PASSWORD: postgres
   before_script:
     - apt-get update && apt-get install -yq postgresql postgresql-contrib
-    - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ./scripts/init.sql
+    - psql -h "postgres" -U "$POSTGRES_USER" -p "$POSTGRES_PASSWORD" -d "$POSTGRES_DB" -f ./scripts/init.sql
   script:
     - go vet ./...
     - go test -v ./... -p 1
@@ -85,5 +85,6 @@ release-api:
 
 sast:
   stage: test-lint-build
+
 include:
   - template: Security/SAST.gitlab-ci.yml
