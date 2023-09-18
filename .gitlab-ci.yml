@@ -13,6 +13,7 @@ test-lint-build-api:
     POSTGRES_DB: coshh
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
+    POSTGRES_HOST_AUTH_METHOD: trust
   before_script:
     - apt-get update && apt-get install -yq postgresql postgresql-contrib
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ./scripts/init-001.sql
