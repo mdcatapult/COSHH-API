@@ -8,7 +8,7 @@ test-lint-build-api:
   image:
     name: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/golang
   services:
-    - postgres:10.11
+    - postgres:12.2-alpine
   variables:
     POSTGRES_DB: coshh
     POSTGRES_USER: postgres
