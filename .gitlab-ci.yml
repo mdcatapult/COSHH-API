@@ -15,7 +15,7 @@ test-lint-build-api:
     POSTGRES_PASSWORD: postgres
   before_script:
     - apt-get update && apt-get install -yq postgresql postgresql-contrib
-    - psql -h postgres  -U "$POSTGRES_USER" -w -d "$POSTGRES_DB" -f ./scripts/init.sql
+    - psql -h postgres -U "$POSTGRES_USER" --no-password -d "$POSTGRES_DB" -f ./scripts/init.sql
   script:
     - go vet ./...
     - go test -v ./... -p 1
