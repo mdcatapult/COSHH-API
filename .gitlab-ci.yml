@@ -3,20 +3,18 @@ stages:
   - publish
   - release-api
 
-default:
-  tags:
-    - wopr
-
 test-lint-build-api:
   stage: test-lint-build
   image:
-    name: registry.mdcatapult.io/informatics/docker-images/ci/golang
+    name: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/golang
   services:
-    - postgres:10.11
+    - postgres:12.2-alpine
   variables:
+    HOST: postgres
     POSTGRES_DB: coshh
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
+    POSTGRES_HOST_AUTH_METHOD: trust
   before_script:
     - apt-get update && apt-get install -yq postgresql postgresql-contrib
     - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f ./scripts/init.sql
@@ -31,15 +29,12 @@ test-lint-build-api:
     variables:
       - "$CI_COMMIT_MESSAGE =~ /^Setting version to.*/"
 
-
 publish-api:
   stage: publish
-  tags:
-    - wopr
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint:
-      - ''
+      - ""
   before_script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
   script:
@@ -58,12 +53,10 @@ publish-api:
 
 publish-api-master:
   stage: publish
-  tags:
-    - wopr
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint:
-      - ''
+      - ""
   before_script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
   script:
@@ -82,7 +75,7 @@ publish-api-master:
 
 release-api:
   stage: release-api
-  image: registry.mdcatapult.io/informatics/docker-images/ci/golang
+  image: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/golang
   script:
     - cictl exec release golang
   only:
@@ -94,7 +87,6 @@ release-api:
 
 sast:
   stage: test-lint-build
-  tags:
-    - wopr
+
 include:
   - template: Security/SAST.gitlab-ci.yml
