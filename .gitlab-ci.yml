@@ -10,6 +10,7 @@ test-lint-build-api:
   services:
     - postgres:12.2-alpine
   variables:
+    HOST: postgres
     POSTGRES_DB: coshh
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
