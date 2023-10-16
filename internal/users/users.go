@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-func GetUsers() ([]string, error) {
+func GetUsers(ldapUser, ldapPassword string) ([]string, error) {
+
 	// connect to ldap server
 	ldapURL := "ldap://medcat.local"
 	l, err := ldap.DialURL(ldapURL)
@@ -17,8 +18,7 @@ func GetUsers() ([]string, error) {
 	defer l.Close()
 
 	// binding to ldap server
-	// TODO use config for password - you can find this on 1Password
-	err = l.Bind("coshhbind@medcat.local", "")
+	err = l.Bind(ldapUser, ldapPassword)
 	if err != nil {
 		log.Fatal(err)
 	}

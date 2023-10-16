@@ -20,6 +20,8 @@ services:
       AUTH0_AUDIENCE: https://coshh-api-local.wopr.inf.mdc
       LABS_CSV: /mnt/${LABS_CSV}
       PROJECTS_CSV: /mnt/${PROJECTS_CSV}
+      LDAP_USER: ${LDAP_USER}
+      LDAP_PASSWORD: ${LDAP_PASSWORD}
       HOST: db
     volumes:
       - type: volume

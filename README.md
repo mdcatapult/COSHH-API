@@ -33,9 +33,14 @@ export LABS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/labs.csv" \
 export PROJECTS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/projects_041022.csv" \
 export Auth0Audience="https://coshh-api-local.wopr.inf.mdc" \
 export Auth0Domain="mdcatapult.eu.auth0.com"
+export LDAP_USER="coshhbind@medcat.local"
+export LDAP_PASSWORD=<copy password from 1Password>
 ```
 
 `Auth0Audience` is the identifier used in the Auth0 setup page for the particular API within the chosen `Auth0Domain`.
+
+LDAP username and password are used to get a list of users from the MDC LDAP server. The coshhbind@medcat.local user has
+been created specifically for this purpose and has readonly access. The password is stored in 1Password.
 
 Start the database:
 ```bash

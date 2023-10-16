@@ -22,6 +22,8 @@ type Config struct {
 	ProjectsCSV   string `env:"PROJECTS_CSV,default=/mnt/projects.csv"`
 	Auth0Audience string `env:"AUTH0_AUDIENCE,required"`
 	Auth0Domain   string `env:"AUTH0_DOMAIN,required"`
+	LDAPUsername  string `env:"LDAP_USERNAME, default=coshhbind@medcat.local"`
+	LDAPPassword  string `env:"LDAP_PASSWORD"`
 }
 
 type (
@@ -184,7 +186,7 @@ func getProjects(c *gin.Context) {
 }
 
 func getUsers(c *gin.Context) {
-	if usersList, err := users.GetUsers(); err != nil {
+	if usersList, err := users.GetUsers(config.LDAPUsername, config.LDAPPassword); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	} else {
