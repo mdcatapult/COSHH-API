@@ -17,7 +17,8 @@ func GetUsers() ([]string, error) {
 	defer l.Close()
 
 	// binding to ldap server
-	err = l.Bind("coshhbind@medcat.local", "Nqtv9m94diUuHm2koMGo")
+	// TODO use config for password - you can find this on 1Password
+	err = l.Bind("coshhbind@medcat.local", "")
 	if err != nil {
 		log.Fatal(err)
 	}
