@@ -12,6 +12,7 @@ import (
 	"github.com/sethvargo/go-envconfig"
 	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/chemical"
 	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/db"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/users"
 )
 
 var config Config
@@ -55,6 +56,8 @@ func Start(port string, validator jwtValidator) error {
 
 	//This route is here to allow standalone testing of authentication using curl
 	r.GET("/protected", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), protectedRoute)
+
+	r.GET("/users", getUsers)
 
 	return r.Run(port)
 }
@@ -178,6 +181,15 @@ func getProjects(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, projects)
+}
+
+func getUsers(c *gin.Context) {
+	if usersList, err := users.GetUsers(); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	} else {
+		c.JSON(http.StatusOK, usersList)
+	}
 }
 
 // Purely for auth testing
