@@ -31,6 +31,7 @@ var cupboardsChem = chemical.Chemical{
 	IsArchived:      false,
 	ProjectSpecific: stringPtr(""),
 	Hazards:         []string{"Explosive", "Flammable"},
+	Owner:           stringPtr(""),
 }
 
 var cupboardsChemOne = chemical.Chemical{
@@ -48,6 +49,7 @@ var cupboardsChemOne = chemical.Chemical{
 	IsArchived:      false,
 	ProjectSpecific: stringPtr(""),
 	Hazards:         []string{"Explosive", "Flammable"},
+	Owner:           stringPtr(""),
 }
 
 var cupboardsChemTwo = chemical.Chemical{
@@ -65,6 +67,7 @@ var cupboardsChemTwo = chemical.Chemical{
 	IsArchived:      false,
 	ProjectSpecific: stringPtr(""),
 	Hazards:         []string{"Explosive", "Flammable"},
+	Owner:           stringPtr(""),
 }
 
 func stringPtr(v string) *string {
