@@ -20,4 +20,5 @@ type Chemical struct {
 	Hazards         []string   `json:"hazards" db:"-"`
 	DBHazards       *string    `json:"-" db:"hazards"`
 	ProjectSpecific *string    `json:"projectSpecific" db:"project_specific"`
+	Owner           *string    `json:"owner" db:"owner"`
 }
