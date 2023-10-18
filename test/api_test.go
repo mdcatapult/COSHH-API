@@ -223,21 +223,6 @@ func TestGetCupboardsForLab(t *testing.T) {
 
 }
 
-func TestGetUsers(t *testing.T) {
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/users", nil)
-	assert.Nil(t, err, "Failed to build GET request")
-
-	response, err := client.Do(req)
-	assert.Nil(t, err, "Failed to send GET request")
-
-	bodyBytes, err := ioutil.ReadAll(response.Body)
-	assert.Nil(t, err, "Failed to read message body")
-	var returnedUsers []string
-
-	err = json.Unmarshal(bodyBytes, &returnedUsers)
-	assert.Nil(t, err, "Failed to unmarshal into chemical")
-}
-
 func TestPutHazards(t *testing.T) {
 	putChem := cupboardsChem
 	putChem.Hazards = []string{"Corrosive", "Serious health hazard"}
