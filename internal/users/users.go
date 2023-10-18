@@ -1,7 +1,6 @@
 package users
 
 import (
-	"fmt"
 	"github.com/go-ldap/ldap/v3"
 	"log"
 	"sort"
@@ -39,7 +38,6 @@ func GetUsers(ldapUser, ldapPassword string) ([]string, error) {
 
 	var userNames []string
 	for _, entry := range sr.Entries {
-		fmt.Println(entry.DN)
 		if !strings.Contains(entry.DN, "Service Accounts") &&
 			!strings.Contains(entry.DN, "Admin") &&
 			!strings.Contains(entry.DN, "Leavers") &&
