@@ -19,7 +19,6 @@ var config Config
 
 type Config struct {
 	LabsCSV       string `env:"LABS_CSV,default=/mnt/labs.csv"`
-	ProjectsCSV   string `env:"PROJECTS_CSV,default=/mnt/projects.csv"`
 	Auth0Audience string `env:"AUTH0_AUDIENCE,required"`
 	Auth0Domain   string `env:"AUTH0_DOMAIN,required"`
 	LDAPUsername  string `env:"LDAP_USERNAME, default=coshhbind@medcat.local"`
@@ -53,8 +52,6 @@ func Start(port string, validator jwtValidator) error {
 	r.PUT("/hazards", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateHazards)
 
 	r.GET("/labs", getLabs)
-
-	r.GET("/projects", getProjects)
 
 	//This route is here to allow standalone testing of authentication using curl
 	r.GET("/protected", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), protectedRoute)
@@ -164,25 +161,6 @@ func getLabs(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, labs)
-}
-
-func getProjects(c *gin.Context) {
-	projectsFile, err := os.Open(config.ProjectsCSV)
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	defer projectsFile.Close()
-
-	csvReader := csv.NewReader(projectsFile)
-	projects, err := csvReader.ReadAll()
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, projects)
 }
 
 func getUsers(c *gin.Context) {

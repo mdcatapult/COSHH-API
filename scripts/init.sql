@@ -39,7 +39,6 @@ CREATE TABLE coshh.chemical
     coshh_link        VARCHAR(255),
     lab_location      VARCHAR(255),
     cupboard          VARCHAR(255),
-    project_specific  VARCHAR(255),
     owner             VARCHAR(255),
     storage_temp      coshh.storage_temp NOT NULL,
     is_archived       BOOLEAN            NOT NULL

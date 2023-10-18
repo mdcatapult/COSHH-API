@@ -30,7 +30,6 @@ export API_PORT=8080 \
 export USER=postgres \
 export SCHEMA=coshh \
 export LABS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/labs.csv" \
-export PROJECTS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/projects_041022.csv" \
 export Auth0Audience="https://coshh-api-local.wopr.inf.mdc" \
 export Auth0Domain="mdcatapult.eu.auth0.com"
 export LDAP_USER="coshhbind@medcat.local"
