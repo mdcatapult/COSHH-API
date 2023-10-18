@@ -19,5 +19,5 @@ type Chemical struct {
 	IsArchived      bool       `json:"isArchived" db:"is_archived"`
 	Hazards         []string   `json:"hazards" db:"-"`
 	DBHazards       *string    `json:"-" db:"hazards"`
-	ProjectSpecific *string    `json:"projectSpecific" db:"project_specific"`
+	Owner           *string    `json:"owner" db:"owner"`
 }
