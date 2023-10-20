@@ -317,3 +317,15 @@ func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical, id int64) error {
 	_, err := tx.NamedExec(query, chemicalToHazards)
 	return err
 }
+
+func GetMaxChemicalNumber() (string, error) {
+	var returnValue string
+
+	query := fmt.Sprintf(`SELECT MAX(chemical_number) FROM %s.chemical`, config.Schema)
+
+	if err := db.Get(&returnValue, query); err != nil {
+		return "", err
+	}
+
+	return returnValue, nil
+}
