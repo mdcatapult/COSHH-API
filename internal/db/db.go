@@ -321,7 +321,7 @@ func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical, id int64) error {
 func GetMaxChemicalNumber() (string, error) {
 	var returnValue string
 
-	query := fmt.Sprintf(`SELECT MAX(chemical_number) FROM %s.chemical`, config.Schema)
+	query := fmt.Sprintf(`SELECT COALESCE(MAX(chemical_number), '00000') FROM %s.chemical`, config.Schema)
 
 	if err := db.Get(&returnValue, query); err != nil {
 		return "", err
