@@ -47,6 +47,8 @@ func Start(port string, validator jwtValidator) error {
 
 	r.POST("/chemical", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), insertChemical)
 
+	r.GET("/chemical/maxchemicalnumber", getMaxChemicalNumber)
+
 	r.GET("/cupboards", getCupboards)
 
 	r.PUT("/hazards", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateHazards)
@@ -170,6 +172,16 @@ func getUsers(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, usersList)
 	}
+}
+
+func getMaxChemicalNumber(c *gin.Context) {
+	chemicalNumber, err := db.GetMaxChemicalNumber()
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, chemicalNumber)
 }
 
 // Purely for auth testing
