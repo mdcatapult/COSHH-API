@@ -60,10 +60,6 @@ CREATE OR REPLACE VIEW coshh.audit_coshh_log_views AS
     GROUP BY coshh_dev.id;
 
 
--- a view to access the function's output
-CREATE OR REPLACE VIEW coshh.audit_coshh_log_views AS
-    SELECT * FROM audit_coshh_log_views_function('audit_coshh_logs');
-
 -- A view function to make it updatedable so any type of operation performed on the view displays the last modified time of the record
 CREATE OR REPLACE FUNCTION audit_coshh_log_views_function()  
 RETURNS TABLE (audit_coshh_viewer_id int, date_updated TIMESTAMP , columns_updated jsonb) AS $$
@@ -111,12 +107,16 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
 -- The trigger to call the audit trigger function
 CREATE TRIGGER audit_trigger_coshh_logs
     AFTER INSERT OR UPDATE OR DELETE ON coshh.audit_coshh_logs
     FOR EACH ROW 
 EXECUTE PROCEDURE audit_coshh_log_views_function();
+
+
+-- a view to access the function's output
+CREATE OR REPLACE VIEW coshh.audit_coshh_log_views AS
+    SELECT * FROM audit_coshh_log_views_function();
 
 
 -- A generic cancel trigger function to prevent changes to the database
