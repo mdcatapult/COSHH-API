@@ -51,7 +51,7 @@ EXECUTE PROCEDURE coshh_audit_triggerfunction();
 
 
 -- A view to show the audit log with just id and last_updated
-CREATE OR REPLACE VIEW coshh.audit_coshh_log_views AS
+CREATE OR REPLACE VIEW coshh.audit_coshh_log AS
     SELECT coshh_dev.id,
            max(audit_coshh.last_updated) AS last_updated
     FROM coshh.chemical coshh_dev
