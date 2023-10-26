@@ -73,6 +73,11 @@ psql -h localhost -U postgres -d informatics        \\ password is postgres
 SET schema 'coshh';                                 
 ```
 
+#### to view the output of audit_trigger.sql
+
+simply run this command `SELECT * FROM coshh.audit_coshh_logs` or `SELECT * FROM coshh.audit_coshh_log_views`.
+
+
 ### Testing Authenticated Routes
 Get the Auth0 client token from the Auth0 web portal.
 * Login in to the Auth0 web page.
@@ -96,26 +101,6 @@ Successful auth results in `"You have successfully authenticated"`. Failure to a
 When writing any new sql queries always remember to commit the transaction!
 
 
-#### running the audit_trigger
-To run the audit trigger, you must have an existing schema which is 'coshh' and coshh.chemical table, the scripts/audit _trigger.sql file can be implemented using a query tool found in POSTGRESQL Database.
-
-NB: All code required to implement these steps can be found in  `audit_trigger.sql file` 
-
-These steps have to be followed accordingly 
-
-The first step is to create a table to keep audit trail of each transactions performed on the schema to do so
-
-1. Run the table `coshh.audit_coshh_logs`  code provided in the audit_trigger.sql
-
-2. The next step is to run the corresponding `coshh_audit_triggerfunction()` which gets triggered if there is any update on the `coshh.chemical table`
-
-3. A trigger is required to call the function above, run both the `coshh.audit_coshh_logs` and `audit_coshh_logs_truncate` triggers
-
-4. A View function(`audit_coshh_log_views_function`) was created to combine both `coshh.audit_coshh_logs` and `coshh.chemical table` in coshh schema, run this view function mentioned and also the corresponding trigger (`audit_trigger_coshh_logs `)
-
-5. To create a view in POSTGRESQL the view table `coshh.audit_coshh_log_views` can be used to access the output of `audit_coshh_log_views_function()`
-
-Finally to view the output simply run this command `SELECT * FROM audit_coshh_log_views` or `SELECT * FROM coshh.audit_coshh_log_views`.
 
 #### CI
 
