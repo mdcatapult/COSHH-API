@@ -12,15 +12,17 @@ import (
 	"github.com/sethvargo/go-envconfig"
 	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/chemical"
 	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/db"
+	"gitlab.mdcatapult.io/informatics/coshh/coshh-api/internal/users"
 )
 
 var config Config
 
 type Config struct {
 	LabsCSV       string `env:"LABS_CSV,default=/mnt/labs.csv"`
-	ProjectsCSV   string `env:"PROJECTS_CSV,default=/mnt/projects.csv"`
 	Auth0Audience string `env:"AUTH0_AUDIENCE,required"`
 	Auth0Domain   string `env:"AUTH0_DOMAIN,required"`
+	LDAPUsername  string `env:"LDAP_USERNAME, default=coshhbind@medcat.local"`
+	LDAPPassword  string `env:"LDAP_PASSWORD"`
 }
 
 type (
@@ -45,16 +47,18 @@ func Start(port string, validator jwtValidator) error {
 
 	r.POST("/chemical", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), insertChemical)
 
+	r.GET("/chemical/maxchemicalnumber", getMaxChemicalNumber)
+
 	r.GET("/cupboards", getCupboards)
 
 	r.PUT("/hazards", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), updateHazards)
 
 	r.GET("/labs", getLabs)
 
-	r.GET("/projects", getProjects)
-
 	//This route is here to allow standalone testing of authentication using curl
 	r.GET("/protected", adapter.Wrap(validator(config.Auth0Audience, config.Auth0Domain)), protectedRoute)
+
+	r.GET("/users", getUsers)
 
 	return r.Run(port)
 }
@@ -161,23 +165,23 @@ func getLabs(c *gin.Context) {
 	c.JSON(http.StatusOK, labs)
 }
 
-func getProjects(c *gin.Context) {
-	projectsFile, err := os.Open(config.ProjectsCSV)
+func getUsers(c *gin.Context) {
+	if usersList, err := users.GetUsers(config.LDAPUsername, config.LDAPPassword); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	} else {
+		c.JSON(http.StatusOK, usersList)
+	}
+}
+
+func getMaxChemicalNumber(c *gin.Context) {
+	chemicalNumber, err := db.GetMaxChemicalNumber()
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	defer projectsFile.Close()
-
-	csvReader := csv.NewReader(projectsFile)
-	projects, err := csvReader.ReadAll()
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, projects)
+	c.JSON(http.StatusOK, chemicalNumber)
 }
 
 // Purely for auth testing
