@@ -73,6 +73,18 @@ psql -h localhost -U postgres -d informatics        \\ password is postgres
 SET schema 'coshh';                                 
 ```
 
+#### View the output of audit_triggers/trigger functions
+This audit trigger/functions provide transactions records of CRUD operations done on the chemical table(informatics.coshh).
+Before running the commands below. 
+You must have inserted and updated data into the coshh schema tables, only then can you run the following commands
+
+simply run this command 
+```
+`SELECT * FROM audit_coshh_logs;` or `SELECT * FROM audit_coshh_log_views;`
+
+```
+NB: If none of the commands work add a coshh prefix for example `coshh.audit_coshh_logs`.
+
 ### Testing Authenticated Routes
 Get the Auth0 client token from the Auth0 web portal.
 * Login in to the Auth0 web page.
@@ -94,6 +106,8 @@ Successful auth results in `"You have successfully authenticated"`. Failure to a
 #### SQL
 
 When writing any new sql queries always remember to commit the transaction!
+
+
 
 #### CI
 
