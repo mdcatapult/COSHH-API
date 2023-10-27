@@ -43,7 +43,7 @@ $$ LANGUAGE plpgsql;
 
 -- The trigger to call the audit trigger function
 CREATE TRIGGER audit_coshh_logs
-    AFTER INSERT OR UPDATE OR DELETE ON coshh.chemical
+    AFTER INSERT OR UPDATE ON coshh.chemical
     FOR EACH ROW 
 EXECUTE PROCEDURE coshh_audit_triggerfunction();
 
