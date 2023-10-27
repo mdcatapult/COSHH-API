@@ -74,7 +74,9 @@ SET schema 'coshh';
 ```
 
 #### View the output of audit_triggers/trigger functions
-You must have inserted data , and updated data into the coshh schema tables, only then you can run the following commands
+This audit trigger/functions provide transactions records of CRUD operations done on the chemical table(informatics.coshh).
+Before running the commands below. 
+You must have inserted and updated data into the coshh schema tables, only then can you run the following commands
 
 simply run this command 
 ```
