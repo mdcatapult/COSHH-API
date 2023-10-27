@@ -73,10 +73,15 @@ psql -h localhost -U postgres -d informatics        \\ password is postgres
 SET schema 'coshh';                                 
 ```
 
-#### to view the output of audit_trigger.sql
+#### View the output of audit_triggers/trigger functions
+You must have inserted data , and updated data into the coshh schema tables, only then you can run the following commands
 
-simply run this command `SELECT * FROM coshh.audit_coshh_logs` or `SELECT * FROM coshh.audit_coshh_log_views`.
+simply run this command 
+```
+`SELECT * FROM audit_coshh_logs;` or `SELECT * FROM audit_coshh_log_views;`
 
+```
+NB: If none of the commands work add a coshh prefix for example `coshh.audit_coshh_logs`.
 
 ### Testing Authenticated Routes
 Get the Auth0 client token from the Auth0 web portal.
