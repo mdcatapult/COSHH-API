@@ -9,7 +9,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - ./scripts/init-001.sql:/docker-entrypoint-initdb.d/init-001.sql
-      - ./scripts/init-002.sql:/docker-entrypoint-initdb.d/init-002.sql    
+      - ./scripts/init-002.sql:/docker-entrypoint-initdb.d/init-002.sql
+      - ./scripts/init-003.sql:/docker-entrypoint-initdb.d/init-003.sql
 
   server:
     build:
