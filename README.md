@@ -41,7 +41,7 @@ export LDAP_PASSWORD=<copy password from 1Password>
 LDAP username and password are used to get a list of users from the MDC LDAP server. The coshhbind@medcat.local user has
 been created specifically for this purpose and has readonly access. The password is stored in 1Password.
 
-Start the database:
+Start the database (also seeds the db with initial data):
 ```bash
 docker-compose up -d db
 ``` 
@@ -73,6 +73,18 @@ psql -h localhost -U postgres -d informatics        \\ password is postgres
 SET schema 'coshh';                                 
 ```
 
+#### View the output of audit_triggers/trigger functions
+This audit trigger/functions provide transactions records of CRUD operations done on the chemical table(informatics.coshh).
+Before running the commands below. 
+You must have inserted and updated data into the coshh schema tables, only then can you run the following commands
+
+simply run this command 
+```
+`SELECT * FROM audit_coshh_logs;` or `SELECT * FROM audit_coshh_log_views;`
+
+```
+NB: If none of the commands work add a coshh prefix for example `coshh.audit_coshh_logs`.
+
 ### Testing Authenticated Routes
 Get the Auth0 client token from the Auth0 web portal.
 * Login in to the Auth0 web page.
@@ -94,6 +106,15 @@ Successful auth results in `"You have successfully authenticated"`. Failure to a
 #### SQL
 
 When writing any new sql queries always remember to commit the transaction!
+
+#### Seed data
+This is contained in /scripts/etl/init-003.sql and this script is run when the docker-compose file is run.
+The data includes a NULL value for every column in the chemical table without a NON NULL constraint.  This is to help identify
+any errors which might arise when deploying the UI - the live database contains some pretty shaky historic data.
+The data includes one chemical which is archived, two which are expired and one which expires within 30 days (again, to
+facilitate testing of the UI).
+
+**Remember to run `docker-compose down` before running `make run` (or `docker-compose up`) if you want to re-seed the database.**
 
 #### CI
 
