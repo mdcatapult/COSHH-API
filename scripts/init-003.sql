@@ -1,20 +1,20 @@
 \connect informatics
 
 INSERT INTO coshh.chemical VALUES
-                               (1, '123-45-6', 'Chemical one', '1', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 1', 'Cupboard 1', 'Owner 1', 'Shelf', 'false'),
-                               (2, NULL, 'Chemical two', '2', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 1', 'Cupboard 2', 'Owner 2', '+4', 'false'),
-                               (3, '345-67-8', 'Chemical three', NULL, 'solid', '100', CURRENT_DATE, CURRENT_DATE + 1, 'https://www.google.com', 'https://www.google.com', 'Lab 2', 'Cupboard 1', 'Owner 1', 'Shelf', 'false'),
-                               (4, '456-78-9', 'Chemical four', '4', NULL, '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 2', 'Cupboard 1a', 'Owner 3', '-20', 'false'),
-                               (5, '567-89-0', 'Chemical five', '5', 'solid', NULL, CURRENT_DATE, CURRENT_DATE, 'https://www.google.com', 'https://www.google.com', 'Lab 3', 'Cupboard 1', 'Owner 3', 'Shelf', 'false'),
-                               (6, '678-90-1', 'Chemical six', '6', 'liquid', '100', NULL, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 3', 'Cupboard 1b', 'Owner 4', '+4', 'false'),
-                               (7, '789-01-2', 'Chemical seven', '7', 'liquid', '100', CURRENT_DATE, NULL, 'https://www.google.com', 'https://www.google.com', 'Lab 4', 'Cupboard 1', 'Owner 4', '-80', 'false'),
-                               (8, '890-12-3', 'Chemical eight', '8', 'solid', '100', CURRENT_DATE, CURRENT_DATE + 50, NULL, 'https://www.google.com', 'Lab 4', 'Cupboard 2', 'Owner 4', 'Shelf', 'false'),
-                               (9, '890-12-4', 'Chemical nine', '9', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', NULL, 'Lab 5', 'Cupboard 3', 'Owner 5', '+4', 'false'),
-                               (10, '890-12-5', 'Chemical ten', '10', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', NULL, 'Cupboard 4', 'Owner 1', 'Shelf', 'false'),
-                               (11, '901-23-4', 'Chemical eleven', '11', 'solid', '100', CURRENT_DATE, CURRENT_DATE - 50, 'https://www.google.com', 'https://www.google.com', 'Lab 6', NULL, 'Owner 2', 'Shelf', 'false'),
-                               (12, '012-34-5', 'Chemical twelve', '12', 'solid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 6', 'Cupboard 1', NULL, '+4', 'false'),
-                               (13, '111-11-1', 'Chemical thirteen', '13', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 7', 'Cupboard 12', 'Owner 4', '-20', 'false'),
-                               (14, '222-22-2', 'Chemical fourteen', '14', 'solid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 7', 'Cupboard 7', 'Owner 2', '-80', 'true');
+                               (DEFAULT, '123-45-6', 'Chemical one', '00001', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://nanostring.com/wp-content/uploads/LBL-10771-01-Buffer_H_RSD_United_Nations_UN_SDS_Rev6_V4.10_English_GB.pdf', 'https://www.google.com', 'Lab 1', 'Cupboard 1', 'Nick Etherington', 'Shelf', 'false'),
+                               (DEFAULT, NULL, 'Chemical two', '00002', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 1', 'Cupboard 2', 'Ian Dunlop', '+4', 'false'),
+                               (DEFAULT, '345-67-8', 'Chemical three', NULL, 'solid', '100', CURRENT_DATE, CURRENT_DATE + 1, 'https://www.google.com', 'https://www.google.com', 'Lab 2', 'Cupboard 1', 'Nick Etherington', 'Shelf', 'false'),
+                               (DEFAULT, '456-78-9', 'Chemical four', '00004', NULL, '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 2', 'Cupboard 1a', 'Temitope Femi Temiola', '-20', 'false'),
+                               (DEFAULT, '567-89-0', 'Chemical five', '00005', 'solid', NULL, CURRENT_DATE, CURRENT_DATE, 'https://www.google.com', 'https://www.google.com', 'Lab 3', 'Cupboard 1', 'Temitope Femi Temiola', 'Shelf', 'false'),
+                               (DEFAULT, '678-90-1', 'Chemical six', '00006', 'liquid', '100', NULL, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 3', 'Cupboard 1b', 'Niaz Najafi', '+4', 'false'),
+                               (DEFAULT, '789-01-2', 'Chemical seven', '00007', 'liquid', '100', CURRENT_DATE, NULL, 'https://www.google.com', 'https://www.google.com', 'Lab 4', 'Cupboard 1', 'Niaz Najafi', '-80', 'false'),
+                               (DEFAULT, '890-12-3', 'Chemical eight', '00008', 'solid', '100', CURRENT_DATE, CURRENT_DATE + 50, NULL, 'https://www.google.com', 'Lab 4', 'Cupboard 2', 'Niaz Najafi', 'Shelf', 'false'),
+                               (DEFAULT, '890-12-4', 'Chemical nine', '00009', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', NULL, 'Lab 5', 'Cupboard 3', 'Mark Pinches', '+4', 'false'),
+                               (DEFAULT, '890-12-5', 'Chemical ten', '00010', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', NULL, 'Cupboard 4', 'Nick Etherington', 'Shelf', 'false'),
+                               (DEFAULT, '901-23-4', 'Chemical eleven', '00011', 'solid', '100', CURRENT_DATE, CURRENT_DATE - 50, 'https://www.google.com', 'https://www.google.com', 'Lab 6', NULL, 'Ian Dunlop', 'Shelf', 'false'),
+                               (DEFAULT, '112-34-5', 'Chemical twelve', '00012', 'solid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 6', 'Cupboard 1', NULL, '+4', 'false'),
+                               (DEFAULT, '111-11-1', 'Chemical thirteen', '00013', 'liquid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 7', 'Cupboard 12', 'Niaz Najafi', '-20', 'false'),
+                               (DEFAULT, '222-22-2', 'Chemical fourteen', '00014', 'solid', '100', CURRENT_DATE, CURRENT_DATE + 50, 'https://www.google.com', 'https://www.google.com', 'Lab 7', 'Cupboard 7', 'Ian Dunlop', '-80', 'true');
 
 INSERT INTO coshh.chemical_to_hazard VALUES
                                          (1, 'Explosive'),
