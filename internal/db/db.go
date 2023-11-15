@@ -79,7 +79,7 @@ func SelectAllChemicals() ([]chemical.Chemical, error) {
 		    c.cupboard,
 			c.storage_temp,
 			c.is_archived,
-		    c.project_specific,
+			c.chemical_owner,
 			string_agg(CAST(c2h.hazard AS VARCHAR(255)), ',') AS hazards 
 		FROM %s.chemical c
 		LEFT JOIN %s.chemical_to_hazard c2h ON c.id = c2h.id
@@ -153,7 +153,7 @@ func UpdateChemical(chemical chemical.Chemical) error {
 	    cupboard = :cupboard,
 		storage_temp = :storage_temp,
 		is_archived = :is_archived,
-		project_specific = :project_specific
+		chemical_owner = :chemical_owner
 
 	WHERE id = :id
 `, config.Schema,
@@ -220,7 +220,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
         cupboard,
 		storage_temp,
 		is_archived,
-        project_specific
+		chemical_owner
 	)VALUES (
 		:cas_number,
 		:chemical_name,
@@ -235,7 +235,7 @@ func insertChemical(tx *sqlx.Tx, chemical chemical.Chemical) (id int64, err erro
 		:cupboard,
 		:storage_temp,
 		:is_archived,
-		:project_specific
+		:chemical_owner
 	) RETURNING id`,
 		config.Schema,
 	)
@@ -316,4 +316,16 @@ func insertHazards(tx *sqlx.Tx, chemical chemical.Chemical, id int64) error {
 
 	_, err := tx.NamedExec(query, chemicalToHazards)
 	return err
+}
+
+func GetMaxChemicalNumber() (string, error) {
+	var returnValue string
+
+	query := fmt.Sprintf(`SELECT COALESCE(MAX(chemical_number), '00000') FROM %s.chemical`, config.Schema)
+
+	if err := db.Get(&returnValue, query); err != nil {
+		return "", err
+	}
+
+	return returnValue, nil
 }

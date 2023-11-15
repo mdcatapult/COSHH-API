@@ -8,6 +8,7 @@ COPY cmd ./cmd
 COPY internal/chemical ./internal/chemical
 COPY internal/db ./internal/db
 COPY internal/server ./internal/server
+COPY internal/users ./internal/users
 
 RUN go build -o coshh ./cmd/main.go
 
