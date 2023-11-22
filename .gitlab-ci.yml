@@ -24,7 +24,7 @@ test-lint-build-api:
 
   except:
     refs:
-      - master
+      - main
       - tags
     variables:
       - "$CI_COMMIT_MESSAGE =~ /^Setting version to.*/"
@@ -46,12 +46,12 @@ publish-api:
       --dockerfile $CI_PROJECT_DIR/Dockerfile
   except:
     refs:
-      - master
+      - main
       - tags
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
-publish-api-master:
+publish-api-main:
   stage: publish
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -80,7 +80,7 @@ release-api:
     - cictl exec release golang
   only:
     refs:
-      - master
+      - main
   except:
     variables:
       - "$CI_COMMIT_MESSAGE =~ /^Setting version to.*/"
