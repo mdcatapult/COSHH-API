@@ -41,7 +41,8 @@ CREATE TABLE coshh.chemical
     cupboard          VARCHAR(255),
     chemical_owner    VARCHAR(255),
     storage_temp      coshh.storage_temp NOT NULL,
-    is_archived       BOOLEAN            NOT NULL
+    is_archived       BOOLEAN            NOT NULL,
+    last_updated_by   VARCHAR(255)
 );
 
 CREATE TABLE coshh.chemical_to_hazard

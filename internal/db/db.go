@@ -153,8 +153,8 @@ func UpdateChemical(chemical chemical.Chemical) error {
 	    cupboard = :cupboard,
 		storage_temp = :storage_temp,
 		is_archived = :is_archived,
-		chemical_owner = :chemical_owner
-
+		chemical_owner = :chemical_owner,
+		last_updated_by = :last_updated_by
 	WHERE id = :id
 `, config.Schema,
 	)
