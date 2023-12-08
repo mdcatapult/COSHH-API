@@ -3,10 +3,11 @@ package server
 import (
 	"context"
 	"encoding/csv"
-	adapter "github.com/gwatts/gin-adapter"
 	"log"
 	"net/http"
 	"os"
+
+	adapter "github.com/gwatts/gin-adapter"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sethvargo/go-envconfig"
