@@ -1,8 +1,6 @@
 module gitlab.mdcatapult.io/informatics/coshh/coshh-api
 
-go 1.21
-
-toolchain go1.21.6
+go 1.20
 
 require (
 	github.com/auth0-developer-hub/api_standard-library_golang_hello-world v0.0.0-20230804192028-7b1d17b9fd49
