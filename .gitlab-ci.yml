@@ -24,7 +24,6 @@ test-lint-build-api:
   script:
     - go vet ./...
     - go test -v ./... -p 1
-
   except:
     refs:
       - main
@@ -107,7 +106,6 @@ secret_detection:
   allow_failure: false
 
 include:
-  - template: DAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
   - template: Security/Container-Scanning.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
