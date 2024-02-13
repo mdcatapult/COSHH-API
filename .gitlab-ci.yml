@@ -66,12 +66,13 @@ publish-api-main:
       /kaniko/executor
       --context $CI_PROJECT_DIR
       --build-arg VERSION_HASH=$CI_COMMIT_SHORT_SHA
-      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
       --destination $CI_REGISTRY_IMAGE:latest
       --dockerfile $CI_PROJECT_DIR/Dockerfile
   only:
     refs:
       - tags
+      - main
     variables:
       - "$CI_COMMIT_MESSAGE =~ /^Setting version to.*/"
 
