@@ -1,6 +1,9 @@
 stages:
   - test-lint-build
+  #  the test stage is required for sast-iac scanning
+  - test
   - publish
+  - container-scanning
   - release-api
 
 test-lint-build-api:
@@ -21,7 +24,6 @@ test-lint-build-api:
   script:
     - go vet ./...
     - go test -v ./... -p 1
-
   except:
     refs:
       - main
@@ -85,8 +87,27 @@ release-api:
     variables:
       - "$CI_COMMIT_MESSAGE =~ /^Setting version to.*/"
 
+container_scanning:
+  stage: container-scanning
+  allow_failure: false
+  variables:
+    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+dependency_scanning:
+  stage: test-lint-build
+  allow_failure: false
+
 sast:
   stage: test-lint-build
+  allow_failure: false
+
+secret_detection:
+  stage: test-lint-build
+  allow_failure: false
 
 include:
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml
+  - template: Security/SAST-IaC.gitlab-ci.yml
