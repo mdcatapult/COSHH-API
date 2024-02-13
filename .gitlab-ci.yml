@@ -92,7 +92,7 @@ container_scanning:
   stage: container-scanning
   allow_failure: false
   variables:
-    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+    CS_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 dependency_scanning:
   stage: test-lint-build
