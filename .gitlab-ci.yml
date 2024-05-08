@@ -5,6 +5,7 @@ stages:
   - publish
   - container-scanning
   - release-api
+  - deploy
 
 test-lint-build-api:
   stage: test-lint-build
@@ -104,6 +105,20 @@ release-api:
   except:
     variables:
       - "$CI_COMMIT_MESSAGE =~ /^Setting version to.*/"
+
+deploy:
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: ['']
+  script:
+    - kubectl config use-context medicines-discovery-catapult/informatics/coshh/coshh-api:coshh-gitlab-agent
+    - kubectl rollout restart deployment -n coshh-prod coshh-api
+  only:
+    - main
+  inherit:
+    default: false
+
 
 container_scanning:
   stage: container-scanning
