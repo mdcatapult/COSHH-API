@@ -68,7 +68,7 @@ func getChemicals(c *gin.Context) {
 
 	chemicals, err := db.SelectAllChemicals()
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -85,65 +85,79 @@ func getCupboards(c *gin.Context) {
 		chemicals, err = db.GetCupboardsForLab(lab)
 	}
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, chemicals)
 }
 
-func updateChemical(c *gin.Context) {
+func updateChemical(c *gin.Context)  {
 
 	var chemical chemical.Chemical
-	if err := c.BindJSON(&chemical); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
+		if err := c.BindJSON(&chemical); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	if err := db.UpdateChemical(chemical); err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
+		if err := db.UpdateChemical(chemical); err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 
-	c.JSON(http.StatusOK, chemical)
+		c.JSON(http.StatusOK,  gin.H{
+			"chemical": chemical,	
+			"message": "Chemical updated successfully",
+		})
+
 }
 
 func insertChemical(c *gin.Context) {
 
 	var chemical chemical.Chemical
 	if err := c.BindJSON(&chemical); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	id, err := db.InsertChemical(chemical)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	chemical.Id = id
 
-	c.JSON(http.StatusOK, chemical)
+	c.JSON(http.StatusOK,  gin.H{
+		"chemical": chemical,	
+		"message": "Chemical inserted successfully",
+	})
 }
 
 func updateHazards(c *gin.Context) {
 	var chemical chemical.Chemical
 	if err := c.BindJSON(&chemical); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	err := db.DeleteHazards(chemical)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	if len(chemical.Hazards) > 0 {
 		err = db.InsertHazards(chemical)
 		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
 		}
 	}
 
-	c.JSON(http.StatusOK, chemical)
+	c.JSON(http.StatusOK,  gin.H{
+		"chemical": chemical,	
+		"message": "Chemical updated successfully",
+	})
 }
 
 func getLabs(c *gin.Context) {
@@ -178,7 +192,7 @@ func getUsers(c *gin.Context) {
 func getMaxChemicalNumber(c *gin.Context) {
 	chemicalNumber, err := db.GetMaxChemicalNumber()
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
