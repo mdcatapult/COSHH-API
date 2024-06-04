@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -129,7 +129,7 @@ func TestPostChemical(t *testing.T) {
 	assert.Nil(t, err, "Failed to send POST request")
 	assert.Equal(t, http.StatusOK, response.StatusCode)
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err, "Failed to read message body")
 
 	var responseChemical chemical.Chemical
@@ -146,7 +146,7 @@ func TestGetChemical(t *testing.T) {
 	response, err := client.Do(req)
 	assert.Nil(t, err, "Failed to send GET request")
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err, "Failed to read message body")
 	var responseChemicals []chemical.Chemical
 
@@ -174,7 +174,7 @@ func TestPutChemical(t *testing.T) {
 	response, err := client.Do(req)
 	assert.Nil(t, err, "Failed to send PUT request")
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err, "Failed to read message body")
 
 	var responseChemical chemical.Chemical
@@ -190,7 +190,7 @@ func TestGetCupboards(t *testing.T) {
 	response, err := client.Do(req)
 	assert.Nil(t, err, "Failed to send GET request")
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err, "Failed to read message body")
 
 	var responseValues []string
@@ -212,7 +212,7 @@ func TestGetCupboardsForLab(t *testing.T) {
 	response, err := client.Do(req)
 	assert.Nil(t, err, "Failed to send GET request")
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err, "Failed to read message body")
 
 	var responseValues []string
@@ -235,7 +235,7 @@ func TestPutHazards(t *testing.T) {
 	response, err := client.Do(req)
 	assert.Nil(t, err, "Failed to send PUT request")
 
-	bodyBytes, err := ioutil.ReadAll(response.Body)
+	bodyBytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err, "Failed to read message body")
 
 	var responseChemical chemical.Chemical

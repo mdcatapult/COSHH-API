@@ -85,7 +85,7 @@ func getCupboards(c *gin.Context) {
 		chemicals, err = db.GetCupboardsForLab(lab)
 	}
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
@@ -117,7 +117,6 @@ func insertChemical(c *gin.Context) {
 	var chemical chemical.Chemical
 	if err := c.BindJSON(&chemical); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
 	}
 
 	id, err := db.InsertChemical(chemical)
@@ -142,7 +141,7 @@ func updateHazards(c *gin.Context) {
 
 	err := db.DeleteHazards(chemical)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
