@@ -183,7 +183,7 @@ func TestPutChemical(t *testing.T) {
 }
 
 func TestGetCupboards(t *testing.T) {
-	expectedResponse := []string{"3", "4", "closet"}
+	expectedResponse := []string{"", "3", "4", "Cupboard 1", "Cupboard 12", "Cupboard 1a", "Cupboard 1b", "Cupboard 2", "Cupboard 3", "Cupboard 4", "Cupboard 7", "closet"}
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8081/cupboards", nil)
 	assert.Nil(t, err, "Failed to build GET request")
 
