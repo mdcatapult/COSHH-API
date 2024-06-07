@@ -85,39 +85,40 @@ func getCupboards(c *gin.Context) {
 		chemicals, err = db.GetCupboardsForLab(lab)
 	}
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, chemicals)
 }
 
-func updateChemical(c *gin.Context) {
+func updateChemical(c *gin.Context)  {
 
 	var chemical chemical.Chemical
-	if err := c.BindJSON(&chemical); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
+		if err := c.BindJSON(&chemical); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	if err := db.UpdateChemical(chemical); err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
+		if err := db.UpdateChemical(chemical); err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 
-	c.JSON(http.StatusOK, chemical)
+		c.JSON(http.StatusOK, chemical)
+
 }
 
 func insertChemical(c *gin.Context) {
 
 	var chemical chemical.Chemical
 	if err := c.BindJSON(&chemical); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	id, err := db.InsertChemical(chemical)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 	chemical.Id = id
 
@@ -127,7 +128,7 @@ func insertChemical(c *gin.Context) {
 func updateHazards(c *gin.Context) {
 	var chemical chemical.Chemical
 	if err := c.BindJSON(&chemical); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -150,7 +151,7 @@ func getLabs(c *gin.Context) {
 
 	labsFile, err := os.Open(config.LabsCSV)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -159,7 +160,7 @@ func getLabs(c *gin.Context) {
 	csvReader := csv.NewReader(labsFile)
 	labs, err := csvReader.Read()
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -168,7 +169,7 @@ func getLabs(c *gin.Context) {
 
 func getUsers(c *gin.Context) {
 	if usersList, err := users.GetUsers(config.LDAPUsername, config.LDAPPassword); err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	} else {
 		c.JSON(http.StatusOK, usersList)
@@ -178,7 +179,7 @@ func getUsers(c *gin.Context) {
 func getMaxChemicalNumber(c *gin.Context) {
 	chemicalNumber, err := db.GetMaxChemicalNumber()
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
