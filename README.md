@@ -29,7 +29,7 @@ export PORT=5432 \
 export API_PORT=8080 \
 export USER=postgres \
 export SCHEMA=coshh \
-export LABS_CSV="/Users/my.name/IdeaProjects/coshh-api/assets/labs.csv" \
+export LABS_CSV=<path/to/assets/labs.csv> \
 export Auth0Audience="https://coshh-api-local.wopr.inf.mdc" \
 export Auth0Domain="mdcatapult.eu.auth0.com"
 export LDAP_USER="coshhbind@medcat.local"
@@ -124,3 +124,7 @@ had to be  built locally and pushed up to the registry manually.  In the event t
 ```docker build -t registry.mdcatapult.io/informatics/software-engineering/coshh/api:<tag name> . && docker push registry.mdcatapult.io/informatics/software-engineering/coshh/api:<tag name>```
 
 N.B Mac M1 users may need to build the image for amd64 (as opposed to arm64) with `--platform linux/amd64`
+
+### Licence
+
+This project is licensed under the terms of the Apache 2 licence, which can be found in the repository as `LICENCE.txt`
