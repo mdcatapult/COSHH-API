@@ -18,4 +18,5 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT export_chemical_data('/path/to/azure_data.csv');
+SELECT export_chemical_data('/path/to/download/chemical/to/azure/data.csv');
+
