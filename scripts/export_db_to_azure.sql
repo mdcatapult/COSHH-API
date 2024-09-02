@@ -1,8 +1,3 @@
-DROP DATABASE IF EXISTS informatics;
-CREATE DATABASE informatics;
-\connect informatics
-CREATE SCHEMA coshh;
-
 CREATE OR REPLACE FUNCTION export_chemical_data(file_path TEXT)
 RETURNS VOID AS $$
 BEGIN
@@ -15,7 +10,7 @@ BEGIN
         JOIN
             coshh.chemical_to_hazard ON coshh.chemical.id = coshh.chemical_to_hazard.id
     ) TO file_path WITH CSV HEADER;
-END;
+END; 
 $$ LANGUAGE plpgsql;
 
 SELECT export_chemical_data('/path/to/download/chemical/to/azure/data.csv');
